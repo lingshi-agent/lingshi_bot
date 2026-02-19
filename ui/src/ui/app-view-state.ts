@@ -3,7 +3,7 @@ import type { DevicePairingList } from "./controllers/devices.ts";
 import type { ExecApprovalRequest } from "./controllers/exec-approval.ts";
 import type { ExecApprovalsFile, ExecApprovalsSnapshot } from "./controllers/exec-approvals.ts";
 import type { SkillMessage } from "./controllers/skills.ts";
-import type { WecomKfStatus, WecomKfStartConfig } from "./controllers/wecom-kf.ts";
+import type { WecomKfStatus } from "./controllers/wecom-kf.ts";
 import type { GatewayBrowserClient, GatewayHelloOk } from "./gateway.ts";
 import type { Tab } from "./navigation.ts";
 import type { UiSettings } from "./storage.ts";
@@ -123,7 +123,6 @@ export type AppViewState = {
   wecomKfBusy: boolean;
   wecomKfStatus: WecomKfStatus | null;
   wecomKfError: string | null;
-  wecomKfSkipHistory: boolean;
   whatsappLoginMessage: string | null;
   whatsappLoginQrDataUrl: string | null;
   whatsappLoginConnected: boolean | null;
@@ -242,8 +241,7 @@ export type AppViewState = {
   handleDebugCall: () => Promise<void>;
   handleRunUpdate: () => Promise<void>;
   handleWecomKfRefresh: () => Promise<void>;
-  handleWecomKfStart: (config: WecomKfStartConfig) => Promise<void>;
-  handleWecomKfStop: () => Promise<void>;
+  handleWecomKfUnbind: () => Promise<void>;
   setPassword: (next: string) => void;
   setSessionKey: (next: string) => void;
   setChatMessage: (next: string) => void;

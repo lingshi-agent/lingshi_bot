@@ -1,5 +1,5 @@
 import { html } from "lit";
-import type { WecomKfStatus, WecomKfStartConfig } from "../controllers/wecom-kf.ts";
+import type { WecomKfStatus } from "../controllers/wecom-kf.ts";
 import { tr } from "../i18n.ts";
 
 const DEFAULT_SERVER_BASE_URL = "http://8.148.182.238:8080";
@@ -12,13 +12,9 @@ export type WecomKfProps = {
   status: WecomKfStatus | null;
   configForm: Record<string, unknown> | null;
   configDirty: boolean;
-  skipHistory: boolean;
-  onSkipHistoryChange: (next: boolean) => void;
   onConfigPatch: (path: Array<string | number>, value: unknown) => void;
   onConfigSave: () => Promise<void>;
   onRefresh: () => Promise<void>;
-  onStart: (config: WecomKfStartConfig) => Promise<void>;
-  onStop: () => Promise<void>;
   onUnbind: () => Promise<void>;
   deviceIdLocked: boolean;
 };
@@ -35,11 +31,6 @@ function getConfigSection(form: Record<string, unknown> | null): Record<string, 
 function getString(cfg: Record<string, unknown>, key: string): string {
   const val = cfg[key];
   return typeof val === "string" ? val : "";
-}
-
-function getNumber(cfg: Record<string, unknown>, key: string, fallback: number): number {
-  const val = cfg[key];
-  return typeof val === "number" && Number.isFinite(val) ? val : fallback;
 }
 
 function formatDuration(seconds: number | null | undefined): string {
@@ -64,28 +55,15 @@ export function renderWecomKf(props: WecomKfProps) {
   const cfg = getConfigSection(props.configForm);
   const serverBaseUrl = getString(cfg, "serverBaseUrl") || DEFAULT_SERVER_BASE_URL;
   const deviceId = getString(cfg, "deviceId");
-  const skipHistory = props.skipHistory;
-  const listenHost = getString(cfg, "listenHost") || "127.0.0.1";
-  const listenPort = getNumber(cfg, "listenPort", 8080);
 
   const status = props.status;
-  const publicUrl = status?.publicUrl ?? "";
-  const callbackUrl = status?.callbackUrl ?? "";
-  const missing = status?.missing ?? [];
   const device = status?.device ?? null;
   const deviceIdLocked = props.deviceIdLocked;
-
-  const startConfig: WecomKfStartConfig = {
-    serverBaseUrl,
-    deviceId,
-    skipHistory,
-    listenHost,
-    listenPort,
-  };
 
   const wsConnected = device?.wsConnected === true;
   const wsConnecting = device?.wsConnecting === true;
   const routeOnline = device?.online === true;
+  const isConnected = device?.isBound === true && wsConnected;
   const connectionLabel = wsConnected
     ? tr("wecom.connection.connected")
     : wsConnecting
@@ -94,6 +72,7 @@ export function renderWecomKf(props: WecomKfProps) {
   const connectionDetail = routeOnline
     ? tr("wecom.connection.serverOnline")
     : tr("wecom.connection.serverOffline");
+  const qrImageUrl = device?.qrImageUrl ?? null;
 
   return html`
     <section class="page">
@@ -114,7 +93,102 @@ export function renderWecomKf(props: WecomKfProps) {
         </div>
       </div>
 
-      <div class="card" style="margin-top: 16px;">
+      <div class="grid grid-cols-2 wecom-status-grid" style="margin-top: 16px;">
+        <section class="card wecom-status-card">
+          <h2>${tr("wecom.status.wechatKf")}</h2>
+          <div style="margin-top: 10px;">
+            <div>${tr("wecom.deviceId")}: <span class="mono">${device?.deviceId || "-"}</span></div>
+            <div style="margin-top: 6px;">
+              ${tr("wecom.bindState")}: ${device?.isBound ? tr("wecom.bound") : tr("wecom.unbound")}
+            </div>
+            <div style="margin-top: 6px;">
+              ${tr("wecom.connection")}: ${connectionLabel}
+              <span class="muted">(${connectionDetail})</span>
+            </div>
+          </div>
+
+          ${
+            isConnected
+              ? html`
+                  <div class="callout" style="margin-top: 12px;">${tr("wecom.status.connected")}</div>
+                  <div style="margin-top: 10px;">
+                    <div>${tr("wecom.boundUser")}: ${device?.binding?.externalUserid || "-"}</div>
+                    <div style="margin-top: 6px;">
+                      ${tr("wecom.lastSeen")}: ${formatTs(device?.lastSeenAt)}
+                    </div>
+                    <div style="margin-top: 6px;">
+                      ${tr("wecom.wsLastConnected")}: ${formatTs(device?.wsLastConnectedAt)}
+                    </div>
+                  </div>
+                `
+              : html`
+                  <div class="callout warn" style="margin-top: 12px;">
+                    ${tr("wecom.status.disconnected")}
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <div>
+                      ${tr("wecom.shortCode")}: <span class="mono">${device?.shortCode || "-"}</span>
+                    </div>
+                    <div style="margin-top: 6px;">
+                      ${tr("wecom.codeCountdown")}: ${formatDuration(device?.expiresInSeconds)}
+                    </div>
+                  </div>
+                  <div style="margin-top: 12px;">
+                    <div class="muted" style="margin-bottom: 8px;">${tr("wecom.qr.title")}</div>
+                    ${
+                      qrImageUrl
+                        ? html`<div class="wecom-qr-wrap">
+                            <img
+                              class="wecom-qr-image"
+                              src=${qrImageUrl}
+                              alt=${tr("wecom.qr.title")}
+                              @error=${(ev: Event) => {
+                                const img = ev.currentTarget as HTMLImageElement;
+                                img.style.display = "none";
+                                const fallback = img.nextElementSibling as HTMLElement | null;
+                                if (fallback) fallback.style.display = "block";
+                              }}
+                            />
+                            <div class="muted" style="display: none;">${tr("wecom.qr.loadFailed")}</div>
+                          </div>`
+                        : html`<div class="wecom-placeholder">${tr("wecom.qr.unconfigured")}</div>`
+                    }
+                  </div>
+                `
+          }
+
+          <div class="row" style="gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+            <button class="btn" ?disabled=${props.busy || !device?.isBound} @click=${() => props.onUnbind()}>
+              ${tr("wecom.unbind")}
+            </button>
+            <button class="btn" ?disabled=${props.loading} @click=${() => props.onRefresh()}>
+              ${tr("wecom.refreshState")}
+            </button>
+          </div>
+          ${
+            device?.lastError
+              ? html`<div class="callout warn" style="margin-top: 10px;">${device.lastError}</div>`
+              : ""
+          }
+          ${
+            props.error
+              ? html`<div class="callout danger" style="margin-top: 10px;">${props.error}</div>`
+              : ""
+          }
+          ${
+            status?.lastError
+              ? html`<div class="callout warn" style="margin-top: 10px;">${status.lastError}</div>`
+              : ""
+          }
+        </section>
+
+        <section class="card wecom-status-card">
+          <h2>${tr("wecom.status.miniProgram")}</h2>
+          <div class="wecom-placeholder" style="margin-top: 12px;">${tr("wecom.status.placeholder")}</div>
+        </section>
+      </div>
+
+      <section class="card" style="margin-top: 16px;">
         <h2>${tr("wecom.gatewayMapping")}</h2>
         <div class="row" style="gap: 16px; flex-wrap: wrap;">
           <label class="field" style="min-width: 260px; flex: 1;">
@@ -152,109 +226,7 @@ export function renderWecomKf(props: WecomKfProps) {
               </div>`
             : ""
         }
-        <div class="row" style="gap: 16px; flex-wrap: wrap; margin-top: 12px;">
-          <label class="field" style="min-width: 260px; flex: 1;">
-            <span>${tr("wecom.onlyProcessNewMessages")}</span>
-            <label class="toggle">
-              <input
-                type="checkbox"
-                .checked=${skipHistory}
-                @change=${(ev: Event) =>
-                  props.onSkipHistoryChange((ev.target as HTMLInputElement).checked)}
-              />
-              <span>${skipHistory ? tr("common.enabled") : tr("common.disabled")}</span>
-            </label>
-          </label>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top: 16px;">
-        <h2>${tr("wecom.serviceControl")}</h2>
-        <div class="row" style="gap: 8px; flex-wrap: wrap;">
-          <button
-            class="btn"
-            ?disabled=${props.busy || !props.connected}
-            @click=${() => props.onStart(startConfig)}
-          >
-            ${tr("common.start")}
-          </button>
-          <button class="btn" ?disabled=${props.busy} @click=${() => props.onStop()}>
-            ${tr("common.stop")}
-          </button>
-        </div>
-        ${
-          props.error
-            ? html`<div class="callout danger" style="margin-top: 10px;">${props.error}</div>`
-            : ""
-        }
-        ${
-          missing.length > 0
-            ? html`<div class="callout warn" style="margin-top: 10px;">
-                ${tr("wecom.missing")} ${missing.join(", ")}
-              </div>`
-            : ""
-        }
-      </div>
-
-      <div class="card" style="margin-top: 16px;">
-        <h2>${tr("wecom.bindingLinkState")}</h2>
-        <div class="muted">
-          ${tr("wecom.service")}: ${status?.running ? tr("wecom.running") : tr("wecom.stopped")}
-          <br />
-          ${tr("wecom.tunnel")}: ${
-            status?.tunnelRunning ? tr("wecom.running") : tr("wecom.stopped")
-          }
-        </div>
-        <div style="margin-top: 8px;">
-          <div>${tr("wecom.publicUrl")}: <span class="mono">${publicUrl || "-"}</span></div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.callbackUrl")}: <span class="mono">${callbackUrl || "-"}</span>
-          </div>
-        </div>
-        <div style="margin-top: 10px;">
-          <div>${tr("wecom.deviceId")}: <span class="mono">${device?.deviceId || "-"}</span></div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.bindState")}: ${device?.isBound ? tr("wecom.bound") : tr("wecom.unbound")}
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.connection")}: ${connectionLabel}
-            <span class="muted">(${connectionDetail})</span>
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.shortCode")}: <span class="mono">${device?.shortCode || "-"}</span>
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.codeCountdown")}: ${formatDuration(device?.expiresInSeconds)}
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.lastSeen")}: ${formatTs(device?.lastSeenAt)}
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.wsLastConnected")}: ${formatTs(device?.wsLastConnectedAt)}
-          </div>
-          <div style="margin-top: 6px;">
-            ${tr("wecom.boundUser")}: ${device?.binding?.externalUserid || "-"}
-          </div>
-        </div>
-        <div class="row" style="gap: 8px; flex-wrap: wrap; margin-top: 12px;">
-          <button class="btn" ?disabled=${props.busy || !device?.isBound} @click=${() => props.onUnbind()}>
-            ${tr("wecom.unbind")}
-          </button>
-          <button class="btn" ?disabled=${props.loading} @click=${() => props.onRefresh()}>
-            ${tr("wecom.refreshState")}
-          </button>
-        </div>
-        ${
-          device?.lastError
-            ? html`<div class="callout warn" style="margin-top: 10px;">${device.lastError}</div>`
-            : ""
-        }
-        ${
-          status?.lastError
-            ? html`<div class="callout warn" style="margin-top: 10px;">${status.lastError}</div>`
-            : ""
-        }
-      </div>
+      </section>
     </section>
   `;
 }

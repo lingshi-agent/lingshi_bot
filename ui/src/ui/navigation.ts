@@ -169,7 +169,7 @@ export function titleForTab(tab: Tab) {
     case "channels":
       return t("Channels", "通道");
     case "wecom":
-      return t("WeCom KF", "微信客服");
+      return t("WeChat Integration", "微信集成");
     case "instances":
       return t("Instances", "实例");
     case "sessions":
@@ -208,8 +208,8 @@ export function subtitleForTab(tab: Tab) {
       return t("Manage channels and settings.", "管理通道与设置。");
     case "wecom":
       return t(
-        "Configure WeCom customer service callback and tunnel.",
-        "配置微信客服回调与公网隧道。",
+        "Connect remote WeChat services and view binding status.",
+        "连接远程微信服务并查看绑定状态。",
       );
     case "instances":
       return t(

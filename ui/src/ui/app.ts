@@ -79,8 +79,6 @@ import { resolveInjectedAssistantIdentity } from "./assistant-identity.ts";
 import { loadAssistantIdentity as loadAssistantIdentityInternal } from "./controllers/assistant-identity.ts";
 import {
   loadWecomKfStatus as loadWecomKfStatusInternal,
-  startWecomKf as startWecomKfInternal,
-  stopWecomKf as stopWecomKfInternal,
   unbindWecomKfDevice as unbindWecomKfDeviceInternal,
 } from "./controllers/wecom-kf.ts";
 import { loadSettings, type UiSettings } from "./storage.ts";
@@ -240,7 +238,6 @@ export class wehelperApp extends LitElement {
   @state() wecomKfBusy = false;
   @state() wecomKfStatus: import("./controllers/wecom-kf.ts").WecomKfStatus | null = null;
   @state() wecomKfError: string | null = null;
-  @state() wecomKfSkipHistory = false;
   @state() whatsappLoginMessage: string | null = null;
   @state() whatsappLoginQrDataUrl: string | null = null;
   @state() whatsappLoginConnected: boolean | null = null;
@@ -474,21 +471,6 @@ export class wehelperApp extends LitElement {
 
   async handleWecomKfRefresh() {
     await loadWecomKfStatusInternal(this);
-  }
-
-  async handleWecomKfStart(config: import("./controllers/wecom-kf.ts").WecomKfStartConfig) {
-    await startWecomKfInternal(this, { ...config, skipHistory: this.wecomKfSkipHistory });
-    // Tunnel URL arrives asynchronously; refresh a couple of times after start.
-    window.setTimeout(() => {
-      void this.handleWecomKfRefresh();
-    }, 1500);
-    window.setTimeout(() => {
-      void this.handleWecomKfRefresh();
-    }, 5000);
-  }
-
-  async handleWecomKfStop() {
-    await stopWecomKfInternal(this);
   }
 
   async handleWecomKfUnbind() {

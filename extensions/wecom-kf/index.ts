@@ -1,5 +1,5 @@
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
-import { resolveWecomKfConfig, type WecomKfStartParams } from "./src/config.js";
+import { resolveWecomKfConfig } from "./src/config.js";
 import { createWecomKfRuntime } from "./src/runtime.js";
 
 const wecomConfigSchema = {
@@ -11,7 +11,7 @@ const wecomConfigSchema = {
 const plugin = {
   id: "wecom-kf",
   name: "WeCom KF",
-  description: "WeCom customer service callback integration",
+  description: "Remote WeCom customer service binding integration",
   configSchema: wecomConfigSchema,
   register(api: OpenClawPluginApi) {
     const runtime = createWecomKfRuntime({
@@ -51,39 +51,6 @@ const plugin = {
       }
     });
 
-    api.registerGatewayMethod("wecom_kf.start", async ({ params, respond }) => {
-      try {
-        const cfg = await loadConfig();
-        const overrides =
-          params && typeof params === "object"
-            ? ((params as Record<string, unknown>).config as WecomKfStartParams | undefined)
-            : undefined;
-        const status = await runtime.start(cfg, overrides);
-        respond(true, status);
-      } catch (err) {
-        respond(false, { error: err instanceof Error ? err.message : String(err) });
-      }
-    });
-
-    api.registerGatewayMethod("wecom_kf.stop", async ({ respond }) => {
-      try {
-        const cfg = await loadConfig();
-        const status = await runtime.stop(cfg);
-        respond(true, status);
-      } catch (err) {
-        respond(false, { error: err instanceof Error ? err.message : String(err) });
-      }
-    });
-
-    api.registerGatewayMethod("wecom_kf.device.status", async ({ respond }) => {
-      try {
-        const cfg = await loadConfig();
-        respond(true, runtime.status(cfg).device);
-      } catch (err) {
-        respond(false, { error: err instanceof Error ? err.message : String(err) });
-      }
-    });
-
     api.registerGatewayMethod("wecom_kf.device.sync", async ({ respond }) => {
       try {
         const cfg = await loadConfig();
@@ -99,15 +66,6 @@ const plugin = {
         const cfg = await loadConfig();
         const current = await runtime.unbindDeviceNow(cfg);
         respond(true, current.device);
-      } catch (err) {
-        respond(false, { error: err instanceof Error ? err.message : String(err) });
-      }
-    });
-
-    api.registerGatewayMethod("wecom_kf.link.status", async ({ respond }) => {
-      try {
-        const cfg = await loadConfig();
-        respond(true, runtime.status(cfg).device);
       } catch (err) {
         respond(false, { error: err instanceof Error ? err.message : String(err) });
       }

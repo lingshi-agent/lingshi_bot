@@ -243,23 +243,6 @@ export function renderApp(state: AppViewState) {
             </div>
           `;
         })}
-        <div class="nav-group nav-group--links">
-          <div class="nav-label nav-label--static">
-            <span class="nav-label__text">${tr("shell.resources")}</span>
-          </div>
-          <div class="nav-group__items">
-            <a
-              class="nav-item nav-item--external"
-              href="https://docs.openclaw.ai"
-              target="_blank"
-              rel="noreferrer"
-              title=${tr("shell.docs.openInNewTab")}
-            >
-              <span class="nav-item__icon" aria-hidden="true">${icons.book}</span>
-              <span class="nav-item__text">${tr("shell.docs")}</span>
-            </a>
-          </div>
-        </div>
       </aside>
       <main class="content ${isChat ? "content--chat" : ""}">
         <section class="content-header">
@@ -355,16 +338,10 @@ export function renderApp(state: AppViewState) {
                 status: state.wecomKfStatus,
                 configForm: state.configForm,
                 configDirty: state.configFormDirty,
-                skipHistory: state.wecomKfSkipHistory,
                 deviceIdLocked: Boolean(state.wecomKfStatus?.device?.isBound),
-                onSkipHistoryChange: (next) => {
-                  state.wecomKfSkipHistory = next;
-                },
                 onConfigPatch: (path, value) => patchWecomConfig(path, value),
                 onConfigSave: () => saveConfig(state as unknown as ConfigState),
                 onRefresh: () => state.handleWecomKfRefresh(),
-                onStart: (config) => state.handleWecomKfStart(config),
-                onStop: () => state.handleWecomKfStop(),
                 onUnbind: () => state.handleWecomKfUnbind(),
               })
             : nothing

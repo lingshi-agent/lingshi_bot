@@ -435,6 +435,18 @@ function resolveProviderSummary(formValue: Record<string, unknown> | null): {
 
 export function renderConfig(props: ConfigProps) {
   const validity = props.valid == null ? "unknown" : props.valid ? "valid" : "invalid";
+  const validityLabel =
+    validity === "valid"
+      ? tr("config.status.valid")
+      : validity === "invalid"
+        ? tr("config.status.invalid")
+        : tr("config.status.unknown");
+  const validityClass =
+    validity === "valid"
+      ? "config-inline-status--ok"
+      : validity === "invalid"
+        ? "config-inline-status--danger"
+        : "config-inline-status--muted";
   const analysis = analyzeConfigSchema(props.schema);
   const formUnsafe = analysis.schema ? analysis.unsupportedPaths.length > 0 : false;
 
@@ -495,6 +507,10 @@ export function renderConfig(props: ConfigProps) {
     hasChanges &&
     (props.formMode === "raw" ? true : canSaveForm);
   const canUpdate = props.connected && !props.applying && !props.updating;
+  const showProviderSummary =
+    props.formMode === "form" && props.activeSection === "models" && hasModelsSection;
+  const showFormUnsafe = props.formMode === "form" && formUnsafe;
+  const showIssues = props.issues.length > 0;
 
   return html`
     <div class="config-layout">
@@ -502,12 +518,6 @@ export function renderConfig(props: ConfigProps) {
       <aside class="config-sidebar">
         <div class="config-sidebar__header">
           <div class="config-sidebar__title">${tr("config.settings")}</div>
-          <span
-            class="pill pill--sm ${
-              validity === "valid" ? "pill--ok" : validity === "invalid" ? "pill--danger" : ""
-            }"
-            >${validity}</span
-          >
         </div>
 
         <!-- Search -->
@@ -592,6 +602,9 @@ export function renderConfig(props: ConfigProps) {
         <!-- Action bar -->
         <div class="config-actions">
           <div class="config-actions__left">
+            <span class="pill pill--sm config-inline-status ${validityClass}">
+              ${validityLabel}
+            </span>
             ${
               hasChanges
                 ? html`
@@ -604,7 +617,9 @@ export function renderConfig(props: ConfigProps) {
                   >
                 `
                 : html`
-                    <span class="config-status muted">${tr("config.noChanges")}</span>
+                    <span class="config-inline-status config-inline-status--muted">
+                      ${tr("config.changes.none")}
+                    </span>
                   `
             }
           </div>
@@ -705,63 +720,62 @@ export function renderConfig(props: ConfigProps) {
             : nothing
         }
         ${
-          props.formMode === "form"
+          showProviderSummary
             ? html`
-              <div class="config-section-hero" style="margin-top: 12px;">
-                <div class="config-section-hero__icon">${sidebarIcons.models}</div>
-                <div class="config-section-hero__text" style="display: flex; gap: 12px; flex-wrap: wrap;">
-                  <div style="min-width: 220px;">
-                    <div class="config-section-hero__title">
-                      ${tr("config.providerConfig")}
+                <div class="config-provider-summary">
+                  <div class="config-section-hero__icon">${sidebarIcons.models}</div>
+                  <div class="config-provider-summary__meta">
+                    <div class="config-provider-summary__lead">
+                      <div class="config-section-hero__title">
+                        ${tr("config.providerConfig")}
+                      </div>
+                      <div class="config-section-hero__desc">
+                        ${tr("config.providerConfigHint")}
+                      </div>
                     </div>
-                    <div class="config-section-hero__desc">
-                      ${tr("config.providerConfigHint")}
+                    <div class="config-provider-summary__stats muted">
+                      <div>
+                        ${tr("config.providers")}: ${providerSummary.providerCount}
+                      </div>
+                      <div>
+                        ${tr("config.models")}: ${providerSummary.modelCount}
+                      </div>
+                      <div>
+                        ${tr("config.primaryModel")}: ${
+                          providerSummary.primaryModel
+                            ? html`<span class="mono">${providerSummary.primaryModel}</span>`
+                            : "-"
+                        }
+                      </div>
+                      <div>
+                        ${tr("config.imageModel")}: ${
+                          providerSummary.imageModel
+                            ? html`<span class="mono">${providerSummary.imageModel}</span>`
+                            : "-"
+                        }
+                      </div>
+                      <div>
+                        ${tr("config.providerList")}: ${
+                          providerSummary.providerNames.length > 0
+                            ? html`<span class="mono">${providerSummary.providerNames.join(", ")}</span>`
+                            : "-"
+                        }
+                      </div>
                     </div>
                   </div>
-                  <div class="muted" style="display: grid; gap: 4px; min-width: 260px;">
-                    <div>
-                      ${tr("config.providers")}: ${providerSummary.providerCount}
-                    </div>
-                    <div>
-                      ${tr("config.models")}: ${providerSummary.modelCount}
-                    </div>
-                    <div>
-                      ${tr("config.primaryModel")}: ${
-                        providerSummary.primaryModel
-                          ? html`<span class="mono">${providerSummary.primaryModel}</span>`
-                          : "-"
-                      }
-                    </div>
-                    <div>
-                      ${tr("config.imageModel")}: ${
-                        providerSummary.imageModel
-                          ? html`<span class="mono">${providerSummary.imageModel}</span>`
-                          : "-"
-                      }
-                    </div>
-                    <div>
-                      ${tr("config.providerList")}: ${
-                        providerSummary.providerNames.length > 0
-                          ? html`<span class="mono">${providerSummary.providerNames.join(", ")}</span>`
-                          : "-"
-                      }
-                    </div>
+                  <div class="config-provider-summary__action">
+                    <button
+                      class="btn btn--sm primary"
+                      @click=${() => {
+                        props.onSectionChange("models");
+                        props.onSubsectionChange("providers");
+                      }}
+                    >
+                      ${tr("config.openProviderSettings")}
+                    </button>
                   </div>
                 </div>
-                <div style="margin-left: auto;">
-                  <button
-                    class="btn btn--sm primary"
-                    ?disabled=${!hasModelsSection}
-                    @click=${() => {
-                      props.onSectionChange("models");
-                      props.onSubsectionChange("providers");
-                    }}
-                  >
-                    ${tr("config.openProviderSettings")}
-                  </button>
-                </div>
-              </div>
-            `
+              `
             : nothing
         }
         ${
@@ -795,6 +809,34 @@ export function renderConfig(props: ConfigProps) {
         <!-- Form content -->
         <div class="config-content">
           ${
+            showFormUnsafe || showIssues
+              ? html`
+                  <div class="config-alert-stack">
+                    ${
+                      showFormUnsafe
+                        ? html`
+                            <div class="callout danger">
+                              ${tr("config.formUnsafe")}
+                            </div>
+                          `
+                        : nothing
+                    }
+                    ${
+                      showIssues
+                        ? html`
+                            <div class="callout danger">
+                              <pre class="code-block">
+${JSON.stringify(props.issues, null, 2)}</pre
+                              >
+                            </div>
+                          `
+                        : nothing
+                    }
+                  </div>
+                `
+              : nothing
+          }
+          ${
             props.formMode === "form"
               ? html`
                 ${
@@ -817,15 +859,6 @@ export function renderConfig(props: ConfigProps) {
                         activeSubsection: effectiveSubsection,
                       })
                 }
-                ${
-                  formUnsafe
-                    ? html`
-                        <div class="callout danger" style="margin-top: 12px">
-                          ${tr("config.formUnsafe")}
-                        </div>
-                      `
-                    : nothing
-                }
               `
               : html`
                 <label class="field config-raw-field">
@@ -839,16 +872,6 @@ export function renderConfig(props: ConfigProps) {
               `
           }
         </div>
-
-        ${
-          props.issues.length > 0
-            ? html`<div class="callout danger" style="margin-top: 12px;">
-              <pre class="code-block">
-${JSON.stringify(props.issues, null, 2)}</pre
-              >
-            </div>`
-            : nothing
-        }
       </main>
     </div>
   `;

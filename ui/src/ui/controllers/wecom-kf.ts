@@ -1,16 +1,7 @@
 import type { GatewayBrowserClient } from "../gateway.ts";
 
 export type WecomKfStatus = {
-  running: boolean;
-  tunnelRunning: boolean;
-  publicUrl: string | null;
-  callbackUrl: string | null;
-  servicePid: number | null;
-  tunnelPid: number | null;
   lastError: string | null;
-  missing: string[];
-  listenHost: string;
-  listenPort: number;
   device: {
     enabled: boolean;
     baseUrl: string | null;
@@ -18,6 +9,7 @@ export type WecomKfStatus = {
     connectToken?: string | null;
     isBound: boolean;
     shortCode: string | null;
+    qrImageUrl?: string | null;
     expiresAt: number | null;
     expiresInSeconds: number | null;
     binding: {
@@ -36,18 +28,6 @@ export type WecomKfStatus = {
     lastSyncAt: number | null;
     lastError: string | null;
   };
-};
-
-export type WecomKfStartConfig = {
-  serverBaseUrl?: string;
-  deviceId?: string;
-  corpId?: string;
-  token?: string;
-  aesKey?: string;
-  secret?: string;
-  skipHistory?: boolean;
-  listenHost?: string;
-  listenPort?: number;
 };
 
 type WecomKfHost = {
@@ -107,40 +87,6 @@ export async function unbindWecomKfDevice(host: WecomKfHost) {
   try {
     await host.client.request("wecom_kf.device.unbind");
     const status = (await host.client.request("wecom_kf.status")) as WecomKfStatus;
-    host.wecomKfStatus = status;
-  } catch (err) {
-    host.wecomKfError = err instanceof Error ? err.message : String(err);
-  } finally {
-    host.wecomKfBusy = false;
-  }
-}
-
-export async function startWecomKf(host: WecomKfHost, config: WecomKfStartConfig) {
-  if (!host.client) {
-    host.wecomKfError = "gateway not connected";
-    return;
-  }
-  host.wecomKfBusy = true;
-  host.wecomKfError = null;
-  try {
-    const status = (await host.client.request("wecom_kf.start", { config })) as WecomKfStatus;
-    host.wecomKfStatus = status;
-  } catch (err) {
-    host.wecomKfError = err instanceof Error ? err.message : String(err);
-  } finally {
-    host.wecomKfBusy = false;
-  }
-}
-
-export async function stopWecomKf(host: WecomKfHost) {
-  if (!host.client) {
-    host.wecomKfError = "gateway not connected";
-    return;
-  }
-  host.wecomKfBusy = true;
-  host.wecomKfError = null;
-  try {
-    const status = (await host.client.request("wecom_kf.stop")) as WecomKfStatus;
     host.wecomKfStatus = status;
   } catch (err) {
     host.wecomKfError = err instanceof Error ? err.message : String(err);
