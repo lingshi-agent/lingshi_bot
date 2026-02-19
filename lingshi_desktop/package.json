@@ -6,9 +6,10 @@
   "author": "lingshi",
   "main": "src/main.cjs",
   "scripts": {
-    "build:mac": "pnpm run prepare:bundle && electron-builder --mac dmg --publish never",
-    "build:win": "pnpm run prepare:bundle && electron-builder --win msi --publish never",
+    "build:mac": "pnpm run icons:generate && pnpm run prepare:bundle && electron-builder --mac dmg --publish never",
+    "build:win": "pnpm run icons:generate && pnpm run prepare:bundle && electron-builder --win msi --publish never",
     "dev": "electron .",
+    "icons:generate": "node scripts/generate-icons.mjs",
     "prepare:bundle": "node scripts/prepare-bundle.mjs"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
       }
     ],
     "mac": {
+      "icon": "assets/icon.icns",
       "target": [
         "dmg"
       ],

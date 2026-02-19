@@ -1,5 +1,14 @@
 import { execFileSync } from "node:child_process";
-import { chmodSync, cpSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -119,12 +128,63 @@ function copyRequiredRuntimeFiles() {
   }
 }
 
+function pruneBundleForDesktop() {
+  const leanEnabled = process.env.LINGSHI_DESKTOP_LEAN !== "0";
+  if (!leanEnabled) {
+    return;
+  }
+
+  const removableRootPaths = [
+    resolve(bundleRoot, "docs"),
+    resolve(bundleRoot, "CHANGELOG.md"),
+    resolve(bundleRoot, "README.md"),
+    resolve(bundleRoot, "README-header.png"),
+  ];
+
+  for (const target of removableRootPaths) {
+    rmSync(target, { recursive: true, force: true });
+  }
+
+  const nodeModulesRoot = resolve(bundleRoot, "node_modules");
+  if (!existsSync(nodeModulesRoot)) {
+    return;
+  }
+
+  // IMPORTANT: do not remove directories from node_modules.
+  // Some packages (e.g. yaml) keep runtime JS under `doc/`.
+  const removableFileExt = new Set([".map", ".markdown", ".mkd", ".rst", ".md", ".mdx", ".txt"]);
+
+  function walk(dirPath) {
+    const entries = readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const entryPath = join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+      if (!entry.isFile()) {
+        continue;
+      }
+      const lower = entry.name.toLowerCase();
+      const lastDot = lower.lastIndexOf(".");
+      const ext = lastDot > -1 ? lower.slice(lastDot) : "";
+      const shouldRemove = removableFileExt.has(ext);
+      if (shouldRemove) {
+        rmSync(entryPath, { force: true });
+      }
+    }
+  }
+
+  walk(nodeModulesRoot);
+}
+
 function main() {
   ensureRuntimeArtifacts();
   ensureControlUiArtifacts();
   ensureCleanDir(bundleRoot);
   runPnpmDeploy();
   copyRequiredRuntimeFiles();
+  pruneBundleForDesktop();
   copyNodeRuntime();
   writeBundleMeta();
   console.log(`Bundled runtime ready at ${bundleRoot}`);

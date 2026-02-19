@@ -684,7 +684,8 @@ function createTray() {
   if (process.platform === "darwin") {
     // Keep tray icon at menu-bar scale even if source PNG is large.
     icon = icon.resize({ width: 18, height: 18, quality: "best" });
-    icon.setTemplateImage(true);
+    // Use the branded color tray icon directly (not monochrome template mode).
+    icon.setTemplateImage(false);
   } else {
     icon = icon.resize({ width: 16, height: 16, quality: "best" });
   }
