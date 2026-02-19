@@ -11,6 +11,14 @@ on:
     paths:
       - ".github/workflows/desktop-build.yml"
       - "lingshi_desktop/**"
+      - "ui/**"
+      - "extensions/**"
+      - "src/**"
+      - "scripts/**"
+      - "openclaw.mjs"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
 
 jobs:
   build-desktop:
