@@ -24,6 +24,7 @@ const sourcePath =
 const trayPath = join(assetsDir, "trayTemplate.png");
 const icoPath = join(assetsDir, "icon.ico");
 const icnsPath = join(assetsDir, "icon.icns");
+const forceRegenerate = process.env.FORCE_ICON_GENERATE === "1";
 
 function run(cmd, args, opts = {}) {
   const result = spawnSync(cmd, args, {
@@ -41,6 +42,14 @@ function run(cmd, args, opts = {}) {
 function main() {
   console.log(`[icons] source: ${sourcePath}`);
   mkdirSync(assetsDir, { recursive: true });
+  const outputsExist = [trayPath, icoPath, icnsPath].every((file) => existsSync(file));
+  if (outputsExist && !forceRegenerate) {
+    console.log("[icons] existing generated assets found, reuse without regeneration");
+    console.log(`[icons] keep: ${icoPath}`);
+    console.log(`[icons] keep: ${icnsPath}`);
+    console.log(`[icons] keep: ${trayPath}`);
+    return;
+  }
 
   const py = `
 from PIL import Image
@@ -75,9 +84,17 @@ base.save(
 )
 `;
 
-  run("python3", ["-c", py, sourcePath, trayPath, icoPath, icnsPath], {
-    cwd: workspaceRoot,
-  });
+  try {
+    run("python3", ["-c", py, sourcePath, trayPath, icoPath, icnsPath], {
+      cwd: workspaceRoot,
+    });
+  } catch (error) {
+    if (outputsExist) {
+      console.warn(`[icons] generation failed, fallback to existing assets: ${error.message}`);
+      return;
+    }
+    throw error;
+  }
 
   console.log(`[icons] wrote: ${icoPath}`);
   console.log(`[icons] wrote: ${icnsPath}`);
