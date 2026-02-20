@@ -26,6 +26,8 @@ const requiredBundlePaths = [
 ];
 const requiredDistEntry = resolve(botRoot, "dist", "entry.js");
 const requiredControlUiIndex = resolve(botRoot, "dist", "control-ui", "index.html");
+const workspaceTemplatesSrc = resolve(botRoot, "docs", "reference", "templates");
+const workspaceTemplatesDst = resolve(bundleRoot, "docs", "reference", "templates");
 
 function ensureCleanDir(dir) {
   rmSync(dir, { recursive: true, force: true });
@@ -128,6 +130,13 @@ function copyRequiredRuntimeFiles() {
   }
 }
 
+function ensureWorkspaceTemplatesPackaged() {
+  if (!existsSync(workspaceTemplatesSrc)) {
+    throw new Error(`workspace_templates_missing_source: ${workspaceTemplatesSrc}`);
+  }
+  cpSync(workspaceTemplatesSrc, workspaceTemplatesDst, { recursive: true, force: true });
+}
+
 function pruneBundleForDesktop() {
   const leanEnabled = process.env.LINGSHI_DESKTOP_LEAN !== "0";
   if (!leanEnabled) {
@@ -185,6 +194,7 @@ function main() {
   runPnpmDeploy();
   copyRequiredRuntimeFiles();
   pruneBundleForDesktop();
+  ensureWorkspaceTemplatesPackaged();
   copyNodeRuntime();
   writeBundleMeta();
   console.log(`Bundled runtime ready at ${bundleRoot}`);
