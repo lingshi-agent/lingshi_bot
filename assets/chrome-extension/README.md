@@ -9,8 +9,8 @@ Purpose: attach OpenClaw to an existing Chrome tab so the Gateway can automate i
 3. Install the extension to a stable path:
 
    ```bash
-   openclaw browser extension install
-   openclaw browser extension path
+   lingshi browser extension install
+   lingshi browser extension path
    ```
 
 4. Chrome → `chrome://extensions` → enable “Developer mode”.

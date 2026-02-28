@@ -60,7 +60,7 @@ struct MacNodeRuntimeTests {
                 outPath: String?) async throws -> (path: String, hasAudio: Bool)
             {
                 let url = FileManager().temporaryDirectory
-                    .appendingPathComponent("openclaw-test-screen-record-\(UUID().uuidString).mp4")
+                    .appendingPathComponent("lingshi-test-screen-record-\(UUID().uuidString).mp4")
                 try Data("ok".utf8).write(to: url)
                 return (path: url.path, hasAudio: false)
             }

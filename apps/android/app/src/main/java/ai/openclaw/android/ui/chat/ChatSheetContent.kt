@@ -1,4 +1,4 @@
-package ai.openclaw.android.ui.chat
+package ai.lingshi.android.ui.chat
 
 import android.content.ContentResolver
 import android.net.Uri
@@ -19,8 +19,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import ai.openclaw.android.MainViewModel
-import ai.openclaw.android.chat.OutgoingAttachment
+import ai.lingshi.android.MainViewModel
+import ai.lingshi.android.chat.OutgoingAttachment
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

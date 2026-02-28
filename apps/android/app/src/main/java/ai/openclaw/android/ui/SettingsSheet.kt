@@ -1,4 +1,4 @@
-package ai.openclaw.android.ui
+package ai.lingshi.android.ui
 
 import android.Manifest
 import android.content.Context
@@ -58,12 +58,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import ai.openclaw.android.BuildConfig
-import ai.openclaw.android.LocationMode
-import ai.openclaw.android.MainViewModel
-import ai.openclaw.android.NodeForegroundService
-import ai.openclaw.android.VoiceWakeMode
-import ai.openclaw.android.WakeWords
+import ai.lingshi.android.BuildConfig
+import ai.lingshi.android.LocationMode
+import ai.lingshi.android.MainViewModel
+import ai.lingshi.android.NodeForegroundService
+import ai.lingshi.android.VoiceWakeMode
+import ai.lingshi.android.WakeWords
 
 @Composable
 fun SettingsSheet(viewModel: MainViewModel) {

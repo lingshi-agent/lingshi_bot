@@ -23,7 +23,7 @@
 如果项目目录改名或路径含空格：
 
 ```bash
-OPENCLAW_ROOT="/path/with spaces/lingshi_project/lingshi_bot" ./scripts/startup/setup_wehelper.sh
+LINGSHI_ROOT="/path/with spaces/lingshi_project/lingshi_bot" ./scripts/startup/setup_wehelper.sh
 ```
 
 ### Windows (PowerShell)
@@ -35,7 +35,7 @@ OPENCLAW_ROOT="/path/with spaces/lingshi_project/lingshi_bot" ./scripts/startup/
 如果项目目录改名或路径含空格：
 
 ```powershell
-$env:OPENCLAW_ROOT="D:\Desktop\New folder\lingshi_project\lingshi_bot"
+$env:LINGSHI_ROOT="D:\Desktop\New folder\lingshi_project\lingshi_bot"
 .\scripts\startup\setup_wehelper.ps1
 ```
 
@@ -43,7 +43,7 @@ $env:OPENCLAW_ROOT="D:\Desktop\New folder\lingshi_project\lingshi_bot"
 
 ```
 Generated gateway token: <TOKEN>
-Tip: export OPENCLAW_GATEWAY_TOKEN=<TOKEN>
+Tip: export LINGSHI_GATEWAY_TOKEN=<TOKEN>
 ```
 
 浏览器访问：
@@ -105,7 +105,7 @@ http://127.0.0.1:18789/
 
 - `--port <port>`：覆盖默认端口（默认 18789）
 - `--skip-build`：跳过构建步骤（仅启动）
-- `--token <token>`：指定网关 token（或设置 `OPENCLAW_GATEWAY_TOKEN`）
+- `--token <token>`：指定网关 token（或设置 `LINGSHI_GATEWAY_TOKEN`）
 
 依赖检查：
 
@@ -144,7 +144,7 @@ http://127.0.0.1:18789/
 - 不带参数时进入交互选择
 - 支持 OAuth 和 API Key 两类方式
 - 已配置时默认不重复执行，`--force` / `-Force` 可强制重配
-- 优先使用系统 `openclaw`，若不可用会自动退回本地 `node scripts/run-node.mjs` 或 `pnpm openclaw`
+- 优先使用系统 `lingshi`，若不可用会自动退回本地 `node scripts/run-node.mjs` 或 `pnpm lingshi`
 
 示例：
 
@@ -164,12 +164,12 @@ http://127.0.0.1:18789/
 
 ### 4) 项目目录改名或路径包含空格
 
-- 设置 `OPENCLAW_ROOT` 指向 **lingshi_bot 根目录**（包含 `package.json` 的目录）
+- 设置 `LINGSHI_ROOT` 指向 **lingshi_bot 根目录**（包含 `package.json` 的目录）
 
 ### 2) token mismatch
 
 - UI 右上角设置里粘贴脚本输出的 `<TOKEN>`
-- 或使用 `--token` / `OPENCLAW_GATEWAY_TOKEN` 固定 token
+- 或使用 `--token` / `LINGSHI_GATEWAY_TOKEN` 固定 token
 
 ### 3) 重新配置 Provider
 

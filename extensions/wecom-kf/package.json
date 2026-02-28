@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/wecom-kf",
+  "name": "@lingshi/wecom-kf",
   "version": "2026.2.3",
   "description": "OpenClaw WeCom customer service integration",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ]

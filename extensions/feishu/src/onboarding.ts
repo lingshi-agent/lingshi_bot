@@ -4,19 +4,19 @@ import type {
   DmPolicy,
   OpenClawConfig,
   WizardPrompter,
-} from "openclaw/plugin-sdk";
+} from "lingshi/plugin-sdk";
 import {
   addWildcardAllowFrom,
   DEFAULT_ACCOUNT_ID,
   formatDocsLink,
   normalizeAccountId,
   promptAccountId,
-} from "openclaw/plugin-sdk";
+} from "lingshi/plugin-sdk";
 import {
   listFeishuAccountIds,
   resolveDefaultFeishuAccountId,
   resolveFeishuAccount,
-} from "openclaw/plugin-sdk";
+} from "lingshi/plugin-sdk";
 
 const channel = "feishu" as const;
 

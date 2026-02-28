@@ -46,7 +46,7 @@ describe("createOpenClawCodingTools safeBins", () => {
       return;
     }
 
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-safe-bins-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "lingshi-safe-bins-"));
     const cfg: OpenClawConfig = {
       tools: {
         exec: {

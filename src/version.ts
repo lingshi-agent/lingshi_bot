@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
 
-declare const __OPENCLAW_VERSION__: string | undefined;
+declare const __LINGSHI_VERSION__: string | undefined;
 
 function readVersionFromPackageJson(): string | null {
   try {
@@ -36,8 +36,8 @@ function readVersionFromBuildInfo(): string | null {
 // - Embedded/bundled builds: injected define or env var.
 // - Dev/npm builds: package.json.
 export const VERSION =
-  (typeof __OPENCLAW_VERSION__ === "string" && __OPENCLAW_VERSION__) ||
-  process.env.OPENCLAW_BUNDLED_VERSION ||
+  (typeof __LINGSHI_VERSION__ === "string" && __LINGSHI_VERSION__) ||
+  process.env.LINGSHI_BUNDLED_VERSION ||
   readVersionFromPackageJson() ||
   readVersionFromBuildInfo() ||
   "0.0.0";

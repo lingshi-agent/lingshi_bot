@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/imessage",
+  "name": "@lingshi/imessage",
   "version": "2026.2.2",
   "description": "OpenClaw iMessage channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ]

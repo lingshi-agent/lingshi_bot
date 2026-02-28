@@ -3,15 +3,15 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-find_openclaw_dir() {
+find_lingshi_dir() {
   local dir="$SCRIPT_DIR"
   local i
   for i in 1 2 3 4 5 6; do
-    if [[ -f "$dir/openclaw/package.json" ]]; then
-      echo "$dir/openclaw"
+    if [[ -f "$dir/lingshi/package.json" ]]; then
+      echo "$dir/lingshi"
       return 0
     fi
-    if [[ -f "$dir/package.json" ]] && grep -q '"name"[[:space:]]*:[[:space:]]*"openclaw"' "$dir/package.json"; then
+    if [[ -f "$dir/package.json" ]] && grep -q '"name"[[:space:]]*:[[:space:]]*"lingshi"' "$dir/package.json"; then
       echo "$dir"
       return 0
     fi
@@ -20,26 +20,26 @@ find_openclaw_dir() {
   return 1
 }
 
-OPENCLAW_DIR="${OPENCLAW_ROOT:-}"
-if [[ -z "$OPENCLAW_DIR" ]]; then
-  OPENCLAW_DIR="$(find_openclaw_dir || true)"
+LINGSHI_DIR="${LINGSHI_ROOT:-}"
+if [[ -z "$LINGSHI_DIR" ]]; then
+  LINGSHI_DIR="$(find_lingshi_dir || true)"
 fi
-if [[ -z "$OPENCLAW_DIR" ]]; then
-  echo "无法定位 OpenClaw 目录。请设置 OPENCLAW_ROOT 指向包含 package.json 的 OpenClaw 目录。" >&2
+if [[ -z "$LINGSHI_DIR" ]]; then
+  echo "无法定位 OpenClaw 目录。请设置 LINGSHI_ROOT 指向包含 package.json 的 OpenClaw 目录。" >&2
   exit 1
 fi
 
-OPENCLAW_BIN="${OPENCLAW_BIN:-}"
-if [[ -n "$OPENCLAW_BIN" ]]; then
-  OPENCLAW_CMD=($OPENCLAW_BIN)
-elif command -v openclaw >/dev/null 2>&1; then
-  OPENCLAW_CMD=(openclaw)
-elif [[ -f "$OPENCLAW_DIR/scripts/run-node.mjs" ]]; then
-  OPENCLAW_CMD=(node scripts/run-node.mjs)
+LINGSHI_BIN="${LINGSHI_BIN:-}"
+if [[ -n "$LINGSHI_BIN" ]]; then
+  LINGSHI_CMD=($LINGSHI_BIN)
+elif command -v lingshi >/dev/null 2>&1; then
+  LINGSHI_CMD=(lingshi)
+elif [[ -f "$LINGSHI_DIR/scripts/run-node.mjs" ]]; then
+  LINGSHI_CMD=(node scripts/run-node.mjs)
 elif command -v pnpm >/dev/null 2>&1; then
-  OPENCLAW_CMD=(pnpm openclaw --)
+  LINGSHI_CMD=(pnpm lingshi --)
 else
-  echo "未找到 openclaw 或 pnpm，请先安装。" >&2
+  echo "未找到 lingshi 或 pnpm，请先安装。" >&2
   exit 1
 fi
 
@@ -55,7 +55,7 @@ fi
 
 show_usage() {
   cat <<'USAGE'
-Usage: openclaw/scripts/startup/configure_provider.sh [--provider <id>] [--auth <token|api-key|oauth>] [--api-key <key>] [--token <token>] [--force]
+Usage: lingshi/scripts/startup/configure_provider.sh [--provider <id>] [--auth <token|api-key|oauth>] [--api-key <key>] [--token <token>] [--force]
 
 Providers (common):
   anthropic      (token or api-key)
@@ -72,14 +72,14 @@ Providers (common):
   minimax-api-lightning (api-key)
 
 Examples:
-  ./openclaw/scripts/startup/configure_provider.sh --provider anthropic --auth token --token "<setup-token>"
-  ./openclaw/scripts/startup/configure_provider.sh --provider openai --auth api-key --api-key "<key>"
-  ./openclaw/scripts/startup/configure_provider.sh --provider openai-codex --auth oauth
-  ./openclaw/scripts/startup/configure_provider.sh --provider qwen-portal --auth oauth
+  ./lingshi/scripts/startup/configure_provider.sh --provider anthropic --auth token --token "<setup-token>"
+  ./lingshi/scripts/startup/configure_provider.sh --provider openai --auth api-key --api-key "<key>"
+  ./lingshi/scripts/startup/configure_provider.sh --provider openai-codex --auth oauth
+  ./lingshi/scripts/startup/configure_provider.sh --provider qwen-portal --auth oauth
 USAGE
 }
 
-cd "$OPENCLAW_DIR"
+cd "$LINGSHI_DIR"
 
 provider=""
 auth=""
@@ -115,7 +115,7 @@ provider_has_auth() {
     return 1
   fi
   local json
-  json="$("${OPENCLAW_CMD[@]}" models status --json 2>/dev/null || true)"
+  json="$("${LINGSHI_CMD[@]}" models status --json 2>/dev/null || true)"
   if [[ -z "$json" ]]; then
     return 1
   fi
@@ -216,7 +216,7 @@ run_onboard_api_key() {
   if [[ -z "$key" ]]; then
     read -r -p "请输入 ${choice} 的 API key: " key
   fi
-  "${OPENCLAW_CMD[@]}" onboard --non-interactive --accept-risk --flow manual --mode local \
+  "${LINGSHI_CMD[@]}" onboard --non-interactive --accept-risk --flow manual --mode local \
     --skip-channels --skip-skills --skip-health --skip-ui --skip-daemon \
     --auth-choice "$choice" "$flag" "$key"
 }
@@ -227,7 +227,7 @@ case "$provider" in
       if [[ -z "$token" ]]; then
         read -r -p "请粘贴 Anthropic setup-token: " token
       fi
-      "${OPENCLAW_CMD[@]}" onboard --non-interactive --accept-risk --flow manual --mode local \
+      "${LINGSHI_CMD[@]}" onboard --non-interactive --accept-risk --flow manual --mode local \
         --skip-channels --skip-skills --skip-health --skip-ui --skip-daemon \
         --auth-choice token --token-provider anthropic --token "$token"
     else
@@ -238,11 +238,11 @@ case "$provider" in
     run_onboard_api_key "openai-api-key" "--openai-api-key" "$api_key"
     ;;
   openai-codex)
-    "${OPENCLAW_CMD[@]}" models auth login --provider openai-codex
+    "${LINGSHI_CMD[@]}" models auth login --provider openai-codex
     ;;
   qwen-portal)
-    "${OPENCLAW_CMD[@]}" plugins enable qwen-portal-auth
-    "${OPENCLAW_CMD[@]}" models auth login --provider qwen-portal --set-default
+    "${LINGSHI_CMD[@]}" plugins enable qwen-portal-auth
+    "${LINGSHI_CMD[@]}" models auth login --provider qwen-portal --set-default
     ;;
   gemini)
     run_onboard_api_key "gemini-api-key" "--gemini-api-key" "$api_key"
@@ -273,7 +273,7 @@ case "$provider" in
     ;;
   *)
     if [[ "$auth" == "oauth" ]]; then
-      "${OPENCLAW_CMD[@]}" models auth login --provider "$provider"
+      "${LINGSHI_CMD[@]}" models auth login --provider "$provider"
     else
       echo "未支持的 provider: $provider" >&2
       show_usage
@@ -282,5 +282,5 @@ case "$provider" in
     ;;
  esac
 
-echo "完成。建议运行: openclaw models status"
+echo "完成。建议运行: lingshi models status"
 echo "注意：此脚本仅配置 provider，不会启动网关。"

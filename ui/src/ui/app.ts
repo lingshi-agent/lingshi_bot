@@ -85,7 +85,7 @@ import { loadSettings, type UiSettings } from "./storage.ts";
 import { type ChatAttachment, type ChatQueueItem, type CronFormState } from "./ui-types.ts";
 
 declare global {
-  interface OpenclawDesktopBootstrap {
+  interface LingshiDesktopBootstrap {
     gatewayUrl: string;
     token?: string;
     startupLock: boolean;
@@ -94,12 +94,12 @@ declare global {
 
   interface LingshiDesktopBridge {
     version: string;
-    desktopBootstrap?: OpenclawDesktopBootstrap;
+    desktopBootstrap?: LingshiDesktopBootstrap;
   }
 
   interface Window {
-    __OPENCLAW_CONTROL_UI_BASE_PATH__?: string;
-    __OPENCLAW_DESKTOP_BOOTSTRAP__?: OpenclawDesktopBootstrap;
+    __LINGSHI_CONTROL_UI_BASE_PATH__?: string;
+    __LINGSHI_DESKTOP_BOOTSTRAP__?: LingshiDesktopBootstrap;
     lingshiDesktop?: LingshiDesktopBridge;
     wehelperDesktop?: LingshiDesktopBridge;
   }
@@ -107,7 +107,7 @@ declare global {
 
 const injectedAssistantIdentity = resolveInjectedAssistantIdentity();
 const desktopBootstrap =
-  window.__OPENCLAW_DESKTOP_BOOTSTRAP__ ??
+  window.__LINGSHI_DESKTOP_BOOTSTRAP__ ??
   window.lingshiDesktop?.desktopBootstrap ??
   window.wehelperDesktop?.desktopBootstrap ??
   null;
@@ -125,7 +125,7 @@ function resolveOnboardingMode(): boolean {
   return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
 }
 
-@customElement("openclaw-app")
+@customElement("lingshi-app")
 export class wehelperApp extends LitElement {
   @state() settings: UiSettings = loadSettings();
   @state() password = "";

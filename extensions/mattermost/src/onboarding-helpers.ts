@@ -1,5 +1,5 @@
-import type { OpenClawConfig, WizardPrompter } from "openclaw/plugin-sdk";
-import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "openclaw/plugin-sdk";
+import type { OpenClawConfig, WizardPrompter } from "lingshi/plugin-sdk";
+import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "lingshi/plugin-sdk";
 
 type PromptAccountIdParams = {
   cfg: OpenClawConfig;

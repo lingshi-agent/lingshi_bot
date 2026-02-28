@@ -4,7 +4,7 @@ import { applySettingsFromUrl, setTabFromRoute } from "./app-settings.ts";
 
 declare global {
   interface Window {
-    __OPENCLAW_DESKTOP_BOOTSTRAP__?: {
+    __LINGSHI_DESKTOP_BOOTSTRAP__?: {
       gatewayUrl: string;
       token?: string;
       startupLock: boolean;
@@ -54,7 +54,7 @@ describe("setTabFromRoute", () => {
   });
 
   afterEach(() => {
-    window.__OPENCLAW_DESKTOP_BOOTSTRAP__ = undefined;
+    window.__LINGSHI_DESKTOP_BOOTSTRAP__ = undefined;
     vi.useRealTimers();
   });
 
@@ -89,7 +89,7 @@ describe("setTabFromRoute", () => {
       basePath: "/",
     };
 
-    window.__OPENCLAW_DESKTOP_BOOTSTRAP__ = bootstrap;
+    window.__LINGSHI_DESKTOP_BOOTSTRAP__ = bootstrap;
     applySettingsFromUrl(host);
 
     expect(host.settings.gatewayUrl).toBe("ws://127.0.0.1:19090");

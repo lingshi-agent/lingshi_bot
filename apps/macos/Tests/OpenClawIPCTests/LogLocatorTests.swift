@@ -7,11 +7,11 @@ import Testing
     @Test func launchdGatewayLogPathEnsuresTmpDirExists() throws {
         let fm = FileManager()
         let baseDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        let logDir = baseDir.appendingPathComponent("openclaw-tests-\(UUID().uuidString)")
+        let logDir = baseDir.appendingPathComponent("lingshi-tests-\(UUID().uuidString)")
 
-        setenv("OPENCLAW_LOG_DIR", logDir.path, 1)
+        setenv("LINGSHI_LOG_DIR", logDir.path, 1)
         defer {
-            unsetenv("OPENCLAW_LOG_DIR")
+            unsetenv("LINGSHI_LOG_DIR")
             try? fm.removeItem(at: logDir)
         }
 

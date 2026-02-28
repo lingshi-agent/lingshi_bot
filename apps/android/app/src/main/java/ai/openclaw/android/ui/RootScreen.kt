@@ -1,4 +1,4 @@
-package ai.openclaw.android.ui
+package ai.lingshi.android.ui
 
 import android.annotation.SuppressLint
 import android.Manifest
@@ -65,8 +65,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.core.content.ContextCompat
-import ai.openclaw.android.CameraHudKind
-import ai.openclaw.android.MainViewModel
+import ai.lingshi.android.CameraHudKind
+import ai.lingshi.android.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -424,6 +424,6 @@ private class CanvasA2UIActionBridge(private val onMessage: (String) -> Unit) {
   }
 
   companion object {
-    const val interfaceName: String = "openclawCanvasA2UIAction"
+    const val interfaceName: String = "lingshiCanvasA2UIAction"
   }
 }

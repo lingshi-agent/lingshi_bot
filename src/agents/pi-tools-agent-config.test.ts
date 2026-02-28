@@ -15,7 +15,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/lingshi",
           },
         ],
       },
@@ -44,7 +44,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/lingshi",
             tools: {
               elevated: {
                 enabled: true,
@@ -105,7 +105,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "restricted",
-            workspace: "~/openclaw-restricted",
+            workspace: "~/lingshi-restricted",
             tools: {
               allow: ["read"], // Agent override: only read
               deny: ["exec", "write", "edit"],
@@ -189,12 +189,12 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/lingshi",
             // No tools restriction - all tools available
           },
           {
             id: "family",
-            workspace: "~/openclaw-family",
+            workspace: "~/lingshi-family",
             tools: {
               allow: ["read"],
               deny: ["exec", "write", "edit", "process"],
@@ -399,7 +399,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "work",
-            workspace: "~/openclaw-work",
+            workspace: "~/lingshi-work",
             tools: {
               deny: ["exec", "process"], // Agent deny (override)
             },
@@ -435,7 +435,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "restricted",
-            workspace: "~/openclaw-restricted",
+            workspace: "~/lingshi-restricted",
             sandbox: {
               mode: "all",
               scope: "agent",

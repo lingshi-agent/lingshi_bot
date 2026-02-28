@@ -30,9 +30,9 @@ Enable it in an agent allowlist:
 }
 ```
 
-## Using `openclaw.invoke` (Lobster → OpenClaw tools)
+## Using `lingshi.invoke` (Lobster → OpenClaw tools)
 
-Some Lobster pipelines may include a `openclaw.invoke` step to call back into OpenClaw tools/plugins (for example: `gog` for Google Workspace, `gh` for GitHub, `message.send`, etc.).
+Some Lobster pipelines may include a `lingshi.invoke` step to call back into OpenClaw tools/plugins (for example: `gog` for Google Workspace, `gh` for GitHub, `message.send`, etc.).
 
 For this to work, the OpenClaw Gateway must expose the tool bridge endpoint and the target tool must be allowed by policy:
 
@@ -42,7 +42,7 @@ For this to work, the OpenClaw Gateway must expose the tool bridge endpoint and 
 
 ### Allowlisting recommended
 
-To avoid letting workflows call arbitrary tools, set a tight allowlist on the agent that will be used by `openclaw.invoke`.
+To avoid letting workflows call arbitrary tools, set a tight allowlist on the agent that will be used by `lingshi.invoke`.
 
 Example (allow only a small set of tools):
 

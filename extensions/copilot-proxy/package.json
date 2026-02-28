@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/copilot-proxy",
+  "name": "@lingshi/copilot-proxy",
   "version": "2026.2.2",
   "description": "OpenClaw Copilot Proxy provider plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ]

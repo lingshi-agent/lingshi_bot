@@ -8,12 +8,12 @@ struct CLIInstallerTests {
     @Test func installedLocationFindsExecutable() throws {
         let fm = FileManager()
         let root = fm.temporaryDirectory.appendingPathComponent(
-            "openclaw-cli-installer-\(UUID().uuidString)")
+            "lingshi-cli-installer-\(UUID().uuidString)")
         defer { try? fm.removeItem(at: root) }
 
         let binDir = root.appendingPathComponent("bin")
         try fm.createDirectory(at: binDir, withIntermediateDirectories: true)
-        let cli = binDir.appendingPathComponent("openclaw")
+        let cli = binDir.appendingPathComponent("lingshi")
         fm.createFile(atPath: cli.path, contents: Data())
         try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: cli.path)
 

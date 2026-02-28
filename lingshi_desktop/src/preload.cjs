@@ -35,5 +35,5 @@ const injectedLocale =
   process.env.LINGSHI_UI_LOCALE ||
   process.env.WEHELPER_UI_LOCALE ||
   "zh-CN";
-contextBridge.exposeInMainWorld("OPENCLAW_UI_LOCALE", injectedLocale);
-contextBridge.exposeInMainWorld("OPENCLAW_LOCALE", injectedLocale);
+contextBridge.exposeInMainWorld("LINGSHI_UI_LOCALE", injectedLocale);
+contextBridge.exposeInMainWorld("LINGSHI_LOCALE", injectedLocale);

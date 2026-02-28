@@ -3,15 +3,15 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-find_openclaw_dir() {
+find_lingshi_dir() {
   local dir="$SCRIPT_DIR"
   local i
   for i in 1 2 3 4 5 6; do
-    if [[ -f "$dir/openclaw/package.json" ]]; then
-      echo "$dir/openclaw"
+    if [[ -f "$dir/lingshi/package.json" ]]; then
+      echo "$dir/lingshi"
       return 0
     fi
-    if [[ -f "$dir/package.json" ]] && grep -q '"name"[[:space:]]*:[[:space:]]*"openclaw"' "$dir/package.json"; then
+    if [[ -f "$dir/package.json" ]] && grep -q '"name"[[:space:]]*:[[:space:]]*"lingshi"' "$dir/package.json"; then
       echo "$dir"
       return 0
     fi
@@ -20,27 +20,27 @@ find_openclaw_dir() {
   return 1
 }
 
-OPENCLAW_DIR="${OPENCLAW_ROOT:-}"
-if [[ -z "$OPENCLAW_DIR" ]]; then
-  OPENCLAW_DIR="$(find_openclaw_dir || true)"
+LINGSHI_DIR="${LINGSHI_ROOT:-}"
+if [[ -z "$LINGSHI_DIR" ]]; then
+  LINGSHI_DIR="$(find_lingshi_dir || true)"
 fi
-if [[ -z "$OPENCLAW_DIR" ]]; then
-  echo "无法定位 OpenClaw 目录。请设置 OPENCLAW_ROOT 指向包含 package.json 的 OpenClaw 目录。" >&2
+if [[ -z "$LINGSHI_DIR" ]]; then
+  echo "无法定位 OpenClaw 目录。请设置 LINGSHI_ROOT 指向包含 package.json 的 OpenClaw 目录。" >&2
   exit 1
 fi
 
 PORT=18789
 SKIP_BUILD=0
-GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-}"
+GATEWAY_TOKEN="${LINGSHI_GATEWAY_TOKEN:-}"
 
 usage() {
   cat <<EOF
-Usage: ./openclaw/scripts/startup/setup_wehelper.sh [--port <port>] [--skip-build] [--token <token>]
+Usage: ./lingshi/scripts/startup/setup_wehelper.sh [--port <port>] [--skip-build] [--token <token>]
 
 Options:
   --port <port>     Override default port (18789)
   --skip-build      Skip build steps, only start gateway
-  --token <token>   Gateway auth token (or set OPENCLAW_GATEWAY_TOKEN)
+  --token <token>   Gateway auth token (or set LINGSHI_GATEWAY_TOKEN)
   -h, --help        Show this help
 EOF
 }
@@ -79,7 +79,7 @@ fi
 if [[ -z "$GATEWAY_TOKEN" ]]; then
   GATEWAY_TOKEN="$(node -e "console.log(require('crypto').randomBytes(16).toString('hex'))")"
   echo "Generated gateway token: $GATEWAY_TOKEN"
-  echo "Tip: export OPENCLAW_GATEWAY_TOKEN=$GATEWAY_TOKEN"
+  echo "Tip: export LINGSHI_GATEWAY_TOKEN=$GATEWAY_TOKEN"
 fi
 
 require_cmd() {
@@ -106,19 +106,19 @@ if ! command -v cloudflared >/dev/null 2>&1; then
   echo "Install (Linux): https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation"
 fi
 
-cd "$OPENCLAW_DIR"
+cd "$LINGSHI_DIR"
 
-OPENCLAW_CMD=()
-if [[ -n "${OPENCLAW_BIN:-}" ]]; then
-  OPENCLAW_CMD=($OPENCLAW_BIN)
-elif [[ -f "$OPENCLAW_DIR/scripts/run-node.mjs" ]]; then
-  OPENCLAW_CMD=(node scripts/run-node.mjs)
-elif command -v openclaw >/dev/null 2>&1; then
-  OPENCLAW_CMD=(openclaw)
+LINGSHI_CMD=()
+if [[ -n "${LINGSHI_BIN:-}" ]]; then
+  LINGSHI_CMD=($LINGSHI_BIN)
+elif [[ -f "$LINGSHI_DIR/scripts/run-node.mjs" ]]; then
+  LINGSHI_CMD=(node scripts/run-node.mjs)
+elif command -v lingshi >/dev/null 2>&1; then
+  LINGSHI_CMD=(lingshi)
 elif command -v pnpm >/dev/null 2>&1; then
-  OPENCLAW_CMD=(pnpm openclaw --)
+  LINGSHI_CMD=(pnpm lingshi --)
 else
-  echo "未找到 openclaw 或 pnpm，请先安装。" >&2
+  echo "未找到 lingshi 或 pnpm，请先安装。" >&2
   exit 1
 fi
 
@@ -128,7 +128,7 @@ fi
 
 provider_configured() {
   local json
-  json="$("${OPENCLAW_CMD[@]}" models status --json 2>/dev/null || true)"
+  json="$("${LINGSHI_CMD[@]}" models status --json 2>/dev/null || true)"
   if [[ -z "$json" ]]; then
     return 1
   fi
@@ -157,4 +157,4 @@ if [[ "$SKIP_BUILD" -eq 0 ]]; then
   pnpm build
 fi
 
-OPENCLAW_GATEWAY_TOKEN="$GATEWAY_TOKEN" "${OPENCLAW_CMD[@]}" gateway --port "$PORT" --verbose --allow-unconfigured --token "$GATEWAY_TOKEN"
+LINGSHI_GATEWAY_TOKEN="$GATEWAY_TOKEN" "${LINGSHI_CMD[@]}" gateway --port "$PORT" --verbose --allow-unconfigured --token "$GATEWAY_TOKEN"

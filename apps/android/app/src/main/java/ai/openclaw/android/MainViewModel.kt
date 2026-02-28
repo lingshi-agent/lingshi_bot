@@ -1,13 +1,13 @@
-package ai.openclaw.android
+package ai.lingshi.android
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import ai.openclaw.android.gateway.GatewayEndpoint
-import ai.openclaw.android.chat.OutgoingAttachment
-import ai.openclaw.android.node.CameraCaptureManager
-import ai.openclaw.android.node.CanvasController
-import ai.openclaw.android.node.ScreenRecordManager
-import ai.openclaw.android.node.SmsManager
+import ai.lingshi.android.gateway.GatewayEndpoint
+import ai.lingshi.android.chat.OutgoingAttachment
+import ai.lingshi.android.node.CameraCaptureManager
+import ai.lingshi.android.node.CanvasController
+import ai.lingshi.android.node.ScreenRecordManager
+import ai.lingshi.android.node.SmsManager
 import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {

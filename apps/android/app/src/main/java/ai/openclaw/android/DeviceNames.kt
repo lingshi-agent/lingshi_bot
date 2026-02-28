@@ -1,4 +1,4 @@
-package ai.openclaw.android
+package ai.lingshi.android
 
 import android.content.Context
 import android.os.Build

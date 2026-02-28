@@ -1,6 +1,6 @@
+import type { OpenClawConfig } from "lingshi/plugin-sdk";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { OpenClawConfig } from "openclaw/plugin-sdk";
-import { resolveMentionGatingWithBypass } from "openclaw/plugin-sdk";
+import { resolveMentionGatingWithBypass } from "lingshi/plugin-sdk";
 import type {
   GoogleChatAnnotation,
   GoogleChatAttachment,

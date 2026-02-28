@@ -81,43 +81,43 @@ vi.mock("./progress.js", () => ({
 
 describe("daemon-cli coverage", () => {
   const originalEnv = {
-    OPENCLAW_STATE_DIR: process.env.OPENCLAW_STATE_DIR,
-    OPENCLAW_CONFIG_PATH: process.env.OPENCLAW_CONFIG_PATH,
-    OPENCLAW_GATEWAY_PORT: process.env.OPENCLAW_GATEWAY_PORT,
-    OPENCLAW_PROFILE: process.env.OPENCLAW_PROFILE,
+    LINGSHI_STATE_DIR: process.env.LINGSHI_STATE_DIR,
+    LINGSHI_CONFIG_PATH: process.env.LINGSHI_CONFIG_PATH,
+    LINGSHI_GATEWAY_PORT: process.env.LINGSHI_GATEWAY_PORT,
+    LINGSHI_PROFILE: process.env.LINGSHI_PROFILE,
   };
 
   beforeEach(() => {
-    process.env.OPENCLAW_STATE_DIR = "/tmp/openclaw-cli-state";
-    process.env.OPENCLAW_CONFIG_PATH = "/tmp/openclaw-cli-state/openclaw.json";
-    delete process.env.OPENCLAW_GATEWAY_PORT;
-    delete process.env.OPENCLAW_PROFILE;
+    process.env.LINGSHI_STATE_DIR = "/tmp/lingshi-cli-state";
+    process.env.LINGSHI_CONFIG_PATH = "/tmp/lingshi-cli-state/lingshi.json";
+    delete process.env.LINGSHI_GATEWAY_PORT;
+    delete process.env.LINGSHI_PROFILE;
     serviceReadCommand.mockResolvedValue(null);
   });
 
   afterEach(() => {
-    if (originalEnv.OPENCLAW_STATE_DIR !== undefined) {
-      process.env.OPENCLAW_STATE_DIR = originalEnv.OPENCLAW_STATE_DIR;
+    if (originalEnv.LINGSHI_STATE_DIR !== undefined) {
+      process.env.LINGSHI_STATE_DIR = originalEnv.LINGSHI_STATE_DIR;
     } else {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.LINGSHI_STATE_DIR;
     }
 
-    if (originalEnv.OPENCLAW_CONFIG_PATH !== undefined) {
-      process.env.OPENCLAW_CONFIG_PATH = originalEnv.OPENCLAW_CONFIG_PATH;
+    if (originalEnv.LINGSHI_CONFIG_PATH !== undefined) {
+      process.env.LINGSHI_CONFIG_PATH = originalEnv.LINGSHI_CONFIG_PATH;
     } else {
-      delete process.env.OPENCLAW_CONFIG_PATH;
+      delete process.env.LINGSHI_CONFIG_PATH;
     }
 
-    if (originalEnv.OPENCLAW_GATEWAY_PORT !== undefined) {
-      process.env.OPENCLAW_GATEWAY_PORT = originalEnv.OPENCLAW_GATEWAY_PORT;
+    if (originalEnv.LINGSHI_GATEWAY_PORT !== undefined) {
+      process.env.LINGSHI_GATEWAY_PORT = originalEnv.LINGSHI_GATEWAY_PORT;
     } else {
-      delete process.env.OPENCLAW_GATEWAY_PORT;
+      delete process.env.LINGSHI_GATEWAY_PORT;
     }
 
-    if (originalEnv.OPENCLAW_PROFILE !== undefined) {
-      process.env.OPENCLAW_PROFILE = originalEnv.OPENCLAW_PROFILE;
+    if (originalEnv.LINGSHI_PROFILE !== undefined) {
+      process.env.LINGSHI_PROFILE = originalEnv.LINGSHI_PROFILE;
     } else {
-      delete process.env.OPENCLAW_PROFILE;
+      delete process.env.LINGSHI_PROFILE;
     }
   });
 
@@ -148,10 +148,10 @@ describe("daemon-cli coverage", () => {
     serviceReadCommand.mockResolvedValueOnce({
       programArguments: ["/bin/node", "cli", "gateway", "--port", "19001"],
       environment: {
-        OPENCLAW_PROFILE: "dev",
-        OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon-state",
-        OPENCLAW_CONFIG_PATH: "/tmp/openclaw-daemon-state/openclaw.json",
-        OPENCLAW_GATEWAY_PORT: "19001",
+        LINGSHI_PROFILE: "dev",
+        LINGSHI_STATE_DIR: "/tmp/lingshi-daemon-state",
+        LINGSHI_CONFIG_PATH: "/tmp/lingshi-daemon-state/lingshi.json",
+        LINGSHI_GATEWAY_PORT: "19001",
       },
       sourcePath: "/tmp/bot.molt.gateway.plist",
     });

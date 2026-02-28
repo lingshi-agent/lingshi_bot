@@ -25,7 +25,7 @@ import {
   type ChannelPlugin,
   type OpenClawConfig,
   type ResolvedTelegramAccount,
-} from "openclaw/plugin-sdk";
+} from "lingshi/plugin-sdk";
 import { getTelegramRuntime } from "./runtime.js";
 
 const meta = getChatChannelMeta("telegram");

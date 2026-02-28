@@ -39,11 +39,11 @@ function Ensure-Node {
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-function Find-OpenclawDir {
+function Find-LingshiDir {
   param([string]$StartDir)
   $dir = $StartDir
   for ($i = 0; $i -lt 6; $i++) {
-    $candidate = Join-Path $dir "openclaw\package.json"
+    $candidate = Join-Path $dir "lingshi\package.json"
     if (Test-Path $candidate) {
       return (Split-Path -Parent $candidate)
     }
@@ -51,7 +51,7 @@ function Find-OpenclawDir {
     if (Test-Path $pkg) {
       try {
         $json = Get-Content $pkg -Raw | ConvertFrom-Json
-        if ($json.name -eq "openclaw") {
+        if ($json.name -eq "lingshi") {
           return $dir
         }
       } catch {
@@ -64,24 +64,24 @@ function Find-OpenclawDir {
   return $null
 }
 
-$OpenclawDir = $env:OPENCLAW_ROOT
-if (-not $OpenclawDir -or $OpenclawDir.Trim().Length -eq 0) {
-  $OpenclawDir = Find-OpenclawDir -StartDir $ScriptDir
+$LingshiDir = $env:LINGSHI_ROOT
+if (-not $LingshiDir -or $LingshiDir.Trim().Length -eq 0) {
+  $LingshiDir = Find-LingshiDir -StartDir $ScriptDir
 }
-if (-not $OpenclawDir) {
-  Write-Host "无法定位 OpenClaw 目录。请设置 OPENCLAW_ROOT 指向包含 package.json 的 OpenClaw 目录。"
+if (-not $LingshiDir) {
+  Write-Host "无法定位 OpenClaw 目录。请设置 LINGSHI_ROOT 指向包含 package.json 的 OpenClaw 目录。"
   exit 1
 }
 
 if (-not $Token -or $Token.Trim().Length -eq 0) {
-  if ($env:OPENCLAW_GATEWAY_TOKEN) {
-    $Token = $env:OPENCLAW_GATEWAY_TOKEN
+  if ($env:LINGSHI_GATEWAY_TOKEN) {
+    $Token = $env:LINGSHI_GATEWAY_TOKEN
   } else {
     $bytes = New-Object byte[] 16
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
     $Token = ($bytes | ForEach-Object { $_.ToString("x2") }) -join ""
     Write-Host "Generated gateway token: $Token"
-    Write-Host "Tip: set OPENCLAW_GATEWAY_TOKEN=$Token"
+    Write-Host "Tip: set LINGSHI_GATEWAY_TOKEN=$Token"
   }
 }
 
@@ -98,28 +98,28 @@ if (-not (Get-Command cloudflared -ErrorAction SilentlyContinue)) {
   Write-Host "Install (Windows): https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation"
 }
 
-Set-Location $OpenclawDir
+Set-Location $LingshiDir
 
-$OpenclawCmd = @()
-if ($env:OPENCLAW_BIN -and $env:OPENCLAW_BIN.Trim() -ne "") {
-  $OpenclawCmd = $env:OPENCLAW_BIN.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
-} elseif (Get-Command openclaw -ErrorAction SilentlyContinue) {
-  $OpenclawCmd = @("openclaw")
+$LingshiCmd = @()
+if ($env:LINGSHI_BIN -and $env:LINGSHI_BIN.Trim() -ne "") {
+  $LingshiCmd = $env:LINGSHI_BIN.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
+} elseif (Get-Command lingshi -ErrorAction SilentlyContinue) {
+  $LingshiCmd = @("lingshi")
 } elseif (Get-Command pnpm -ErrorAction SilentlyContinue) {
-  $OpenclawCmd = @("pnpm","openclaw","--")
+  $LingshiCmd = @("pnpm","lingshi","--")
 } else {
-  Write-Error "未找到 openclaw 或 pnpm，请先安装。"
+  Write-Error "未找到 lingshi 或 pnpm，请先安装。"
   exit 1
 }
 
-$OpenclawPrefix = @()
-if ($OpenclawCmd.Length -gt 1) {
-  $OpenclawPrefix = $OpenclawCmd[1..($OpenclawCmd.Length-1)]
+$LingshiPrefix = @()
+if ($LingshiCmd.Length -gt 1) {
+  $LingshiPrefix = $LingshiCmd[1..($LingshiCmd.Length-1)]
 }
 
-function Invoke-Openclaw {
+function Invoke-Lingshi {
   param([string[]]$Args)
-  & $OpenclawCmd[0] @OpenclawPrefix @Args
+  & $LingshiCmd[0] @LingshiPrefix @Args
 }
 
 if (-not (Test-Path "node_modules")) {
@@ -128,7 +128,7 @@ if (-not (Test-Path "node_modules")) {
 
 function Test-ProviderConfigured {
   try {
-    $jsonText = Invoke-Openclaw @("models","status","--json") 2>$null | Out-String
+    $jsonText = Invoke-Lingshi @("models","status","--json") 2>$null | Out-String
     if (-not $jsonText -or $jsonText.Trim() -eq "") { return $false }
     $data = $jsonText | ConvertFrom-Json -ErrorAction Stop
   } catch {
@@ -162,5 +162,5 @@ if (-not $SkipBuild) {
   pnpm build
 }
 
-$env:OPENCLAW_GATEWAY_TOKEN = $Token
-Invoke-Openclaw @("gateway","--port",$Port,"--verbose","--allow-unconfigured","--token",$Token)
+$env:LINGSHI_GATEWAY_TOKEN = $Token
+Invoke-Lingshi @("gateway","--port",$Port,"--verbose","--allow-unconfigured","--token",$Token)

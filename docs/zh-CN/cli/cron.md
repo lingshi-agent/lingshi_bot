@@ -2,7 +2,7 @@
 read_when:
   - 你需要定时作业和唤醒功能
   - 你正在调试 cron 执行和日志
-summary: "`openclaw cron` 的 CLI 参考（调度和运行后台作业）"
+summary: "`lingshi cron` 的 CLI 参考（调度和运行后台作业）"
 title: cron
 x-i18n:
   generated_at: "2026-02-03T07:44:47Z"
@@ -13,7 +13,7 @@ x-i18n:
   workflow: 15
 ---
 
-# `openclaw cron`
+# `lingshi cron`
 
 管理 Gateway 网关调度器的 cron 作业。
 
@@ -21,18 +21,18 @@ x-i18n:
 
 - Cron 作业：[Cron 作业](/automation/cron-jobs)
 
-提示：运行 `openclaw cron --help` 查看完整的命令集。
+提示：运行 `lingshi cron --help` 查看完整的命令集。
 
 ## 常用编辑
 
 更新投递设置而不更改消息：
 
 ```bash
-openclaw cron edit <job-id> --deliver --channel telegram --to "123456789"
+lingshi cron edit <job-id> --deliver --channel telegram --to "123456789"
 ```
 
 为隔离的作业禁用投递：
 
 ```bash
-openclaw cron edit <job-id> --no-deliver
+lingshi cron edit <job-id> --no-deliver
 ```

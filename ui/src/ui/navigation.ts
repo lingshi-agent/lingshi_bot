@@ -239,7 +239,7 @@ export function subtitleForTab(tab: Tab) {
         "网关直连对话，用于快速干预。",
       );
     case "config":
-      return t("Edit ~/.openclaw/openclaw.json safely.", "安全编辑 ~/.openclaw/openclaw.json。");
+      return t("Edit ~/.lingshi/lingshi.json safely.", "安全编辑 ~/.lingshi/lingshi.json。");
     case "providers":
       return t(
         "Operations console for model suppliers, credentials, and model mappings.",

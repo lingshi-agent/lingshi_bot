@@ -7,7 +7,7 @@ struct AnthropicAuthResolverTests {
     @Test
     func prefersOAuthFileOverEnv() throws {
         let dir = FileManager().temporaryDirectory
-            .appendingPathComponent("openclaw-oauth-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("lingshi-oauth-\(UUID().uuidString)", isDirectory: true)
         try FileManager().createDirectory(at: dir, withIntermediateDirectories: true)
         let oauthFile = dir.appendingPathComponent("oauth.json")
         let payload = [

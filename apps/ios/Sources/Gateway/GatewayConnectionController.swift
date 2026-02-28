@@ -283,7 +283,7 @@ final class GatewayConnectionController {
             caps: self.currentCaps(),
             commands: self.currentCommands(),
             permissions: [:],
-            clientId: "openclaw-ios",
+            clientId: "lingshi-ios",
             clientMode: "node",
             clientDisplayName: displayName)
     }

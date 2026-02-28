@@ -8,7 +8,7 @@ const TARGETS = [path.join(SRC, "app-render.ts"), path.join(SRC, "views")];
 
 const ALLOWED_PATTERNS = [
   /^https?:\/\//,
-  /^openclaw\b/i,
+  /^lingshi\b/i,
   /^ws:\/\//i,
   /^wss:\/\//i,
   /^LINGSHI_[A-Z0-9_]+$/,

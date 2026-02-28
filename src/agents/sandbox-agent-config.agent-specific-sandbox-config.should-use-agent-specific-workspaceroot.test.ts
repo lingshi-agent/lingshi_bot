@@ -68,13 +68,13 @@ describe("Agent-specific sandbox config", () => {
           sandbox: {
             mode: "all",
             scope: "agent",
-            workspaceRoot: "~/.openclaw/sandboxes", // Global default
+            workspaceRoot: "~/.lingshi/sandboxes", // Global default
           },
         },
         list: [
           {
             id: "isolated",
-            workspace: "~/openclaw-isolated",
+            workspace: "~/lingshi-isolated",
             sandbox: {
               mode: "all",
               scope: "agent",
@@ -108,14 +108,14 @@ describe("Agent-specific sandbox config", () => {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/lingshi",
             sandbox: {
               mode: "off", // main: no sandbox
             },
           },
           {
             id: "family",
-            workspace: "~/openclaw-family",
+            workspace: "~/lingshi-family",
             sandbox: {
               mode: "all", // family: always sandbox
               scope: "agent",
@@ -156,7 +156,7 @@ describe("Agent-specific sandbox config", () => {
         list: [
           {
             id: "restricted",
-            workspace: "~/openclaw-restricted",
+            workspace: "~/lingshi-restricted",
             sandbox: {
               mode: "all",
               scope: "agent",

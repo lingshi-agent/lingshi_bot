@@ -193,7 +193,7 @@ export async function processFeishuMessage(
                     `Pairing code: ${code}`,
                     "",
                     "Ask the OpenClaw admin to approve with:",
-                    `openclaw pairing approve feishu ${code}`,
+                    `lingshi pairing approve feishu ${code}`,
                   ].join("\n"),
                 },
                 { receiveIdType: "open_id" },

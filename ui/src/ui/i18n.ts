@@ -5,8 +5,8 @@ import { zhCN } from "./locales/zh-CN.ts";
 export type UiLocale = "zh-CN" | "en-US";
 
 type GlobalWithLocale = typeof globalThis & {
-  OPENCLAW_UI_LOCALE?: string;
-  OPENCLAW_LOCALE?: string;
+  LINGSHI_UI_LOCALE?: string;
+  LINGSHI_LOCALE?: string;
   lingshiDesktop?: {
     desktopBootstrap?: {
       locale?: string;
@@ -17,7 +17,7 @@ type GlobalWithLocale = typeof globalThis & {
       locale?: string;
     };
   };
-  __OPENCLAW_DESKTOP_BOOTSTRAP__?: {
+  __LINGSHI_DESKTOP_BOOTSTRAP__?: {
     locale?: string;
   };
 };
@@ -44,7 +44,7 @@ export function resolveLocale(): UiLocale {
   const globals = globalThis as GlobalWithLocale;
 
   const desktopRaw =
-    globals.__OPENCLAW_DESKTOP_BOOTSTRAP__?.locale ||
+    globals.__LINGSHI_DESKTOP_BOOTSTRAP__?.locale ||
     globals.lingshiDesktop?.desktopBootstrap?.locale ||
     globals.wehelperDesktop?.desktopBootstrap?.locale;
   const desktopLocale = normalizeLocaleTag(desktopRaw);
@@ -55,7 +55,7 @@ export function resolveLocale(): UiLocale {
     return "zh-CN";
   }
 
-  const overrideRaw = globals.OPENCLAW_UI_LOCALE || globals.OPENCLAW_LOCALE;
+  const overrideRaw = globals.LINGSHI_UI_LOCALE || globals.LINGSHI_LOCALE;
   const override = normalizeLocaleTag(overrideRaw);
   if (override) {
     return override;

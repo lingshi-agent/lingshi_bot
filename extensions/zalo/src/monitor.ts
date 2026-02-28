@@ -1,5 +1,5 @@
+import type { OpenClawConfig, MarkdownTableMode } from "lingshi/plugin-sdk";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { OpenClawConfig, MarkdownTableMode } from "openclaw/plugin-sdk";
 import type { ResolvedZaloAccount } from "./accounts.js";
 import {
   ZaloApiError,

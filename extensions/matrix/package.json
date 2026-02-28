@@ -1,5 +1,5 @@
 {
-  "name": "@openclaw/matrix",
+  "name": "@lingshi/matrix",
   "version": "2026.2.2",
   "description": "OpenClaw Matrix channel plugin",
   "type": "module",
@@ -11,9 +11,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ],
@@ -28,7 +28,7 @@
       "quickstartAllowFrom": true
     },
     "install": {
-      "npmSpec": "@openclaw/matrix",
+      "npmSpec": "@lingshi/matrix",
       "localPath": "extensions/matrix",
       "defaultChoice": "npm"
     }

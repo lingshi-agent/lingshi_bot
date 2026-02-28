@@ -231,15 +231,15 @@ private struct SkillRow: View {
 
     private var sourceLabel: String {
         switch self.skill.source {
-        case "openclaw-bundled":
+        case "lingshi-bundled":
             "Bundled"
-        case "openclaw-managed":
+        case "lingshi-managed":
             "Managed"
-        case "openclaw-workspace":
+        case "lingshi-workspace":
             "Workspace"
-        case "openclaw-extra":
+        case "lingshi-extra":
             "Extra"
-        case "openclaw-plugin":
+        case "lingshi-plugin":
             "Plugin"
         default:
             self.skill.source
@@ -580,7 +580,7 @@ extension SkillsSettings {
         let skill = SkillStatus(
             name: "Test Skill",
             description: "Test description",
-            source: "openclaw-bundled",
+            source: "lingshi-bundled",
             filePath: "/tmp/skills/test",
             baseDir: "/tmp/skills",
             skillKey: "test",

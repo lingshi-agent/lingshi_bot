@@ -1,4 +1,4 @@
-package ai.openclaw.android.gateway
+package ai.lingshi.android.gateway
 
 import android.util.Log
 import java.util.Locale

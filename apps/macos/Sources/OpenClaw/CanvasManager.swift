@@ -8,7 +8,7 @@ import OSLog
 final class CanvasManager {
     static let shared = CanvasManager()
 
-    private static let logger = Logger(subsystem: "ai.openclaw", category: "CanvasManager")
+    private static let logger = Logger(subsystem: "ai.lingshi", category: "CanvasManager")
 
     private var panelController: CanvasWindowController?
     private var panelSessionKey: String?
@@ -231,7 +231,7 @@ final class CanvasManager {
     private static func resolveA2UIHostUrl(from raw: String?) -> String? {
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !trimmed.isEmpty, let base = URL(string: trimmed) else { return nil }
-        return base.appendingPathComponent("__openclaw__/a2ui/").absoluteString + "?platform=macos"
+        return base.appendingPathComponent("__lingshi__/a2ui/").absoluteString + "?platform=macos"
     }
 
     // MARK: - Anchoring

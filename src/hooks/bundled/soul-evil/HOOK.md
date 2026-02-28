@@ -1,10 +1,10 @@
 ---
 name: soul-evil
 description: "Swap SOUL.md with SOUL_EVIL.md during a purge window or by random chance"
-homepage: https://docs.openclaw.ai/hooks/soul-evil
+homepage: https://docs.lingshi.ai/hooks/soul-evil
 metadata:
   {
-    "openclaw":
+    "lingshi":
       {
         "emoji": "😈",
         "events": ["agent:bootstrap"],
@@ -31,7 +31,7 @@ You can change the filename via hook config.
 
 ## Configuration
 
-Add this to your config (`~/.openclaw/openclaw.json`):
+Add this to your config (`~/.lingshi/lingshi.json`):
 
 ```json
 {
@@ -67,5 +67,5 @@ Add this to your config (`~/.openclaw/openclaw.json`):
 ## Enable
 
 ```bash
-openclaw hooks enable soul-evil
+lingshi hooks enable soul-evil
 ```

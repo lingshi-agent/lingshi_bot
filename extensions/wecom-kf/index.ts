@@ -1,4 +1,4 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
+import type { OpenClawPluginApi } from "lingshi/plugin-sdk";
 import { resolveWecomKfConfig } from "./src/config.js";
 import { createWecomKfRuntime } from "./src/runtime.js";
 

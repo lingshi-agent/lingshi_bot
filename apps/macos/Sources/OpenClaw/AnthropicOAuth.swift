@@ -58,7 +58,7 @@ enum AnthropicAuthResolver {
 }
 
 enum AnthropicOAuth {
-    private static let logger = Logger(subsystem: "ai.openclaw", category: "anthropic-oauth")
+    private static let logger = Logger(subsystem: "ai.lingshi", category: "anthropic-oauth")
 
     private static let clientId = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
     private static let authorizeURL = URL(string: "https://claude.ai/oauth/authorize")!
@@ -197,7 +197,7 @@ enum AnthropicOAuth {
 enum OpenClawOAuthStore {
     static let oauthFilename = "oauth.json"
     private static let providerKey = "anthropic"
-    private static let openclawOAuthDirEnv = "OPENCLAW_OAUTH_DIR"
+    private static let lingshiOAuthDirEnv = "LINGSHI_OAUTH_DIR"
     private static let legacyPiDirEnv = "PI_CODING_AGENT_DIR"
 
     enum AnthropicOAuthStatus: Equatable {
@@ -226,7 +226,7 @@ enum OpenClawOAuthStore {
     }
 
     static func oauthDir() -> URL {
-        if let override = ProcessInfo.processInfo.environment[self.openclawOAuthDirEnv]?
+        if let override = ProcessInfo.processInfo.environment[self.lingshiOAuthDirEnv]?
             .trimmingCharacters(in: .whitespacesAndNewlines),
             !override.isEmpty
         {
@@ -234,7 +234,7 @@ enum OpenClawOAuthStore {
             return URL(fileURLWithPath: expanded, isDirectory: true)
         }
         let home = FileManager().homeDirectoryForCurrentUser
-        let preferred = home.appendingPathComponent(".openclaw", isDirectory: true)
+        let preferred = home.appendingPathComponent(".lingshi", isDirectory: true)
             .appendingPathComponent("credentials", isDirectory: true)
         return preferred
     }

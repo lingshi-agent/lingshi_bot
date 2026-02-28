@@ -9,11 +9,11 @@ Param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-function Find-OpenclawDir {
+function Find-LingshiDir {
   param([string]$StartDir)
   $dir = $StartDir
   for ($i = 0; $i -lt 6; $i++) {
-    $candidate = Join-Path $dir "openclaw\package.json"
+    $candidate = Join-Path $dir "lingshi\package.json"
     if (Test-Path $candidate) {
       return (Split-Path -Parent $candidate)
     }
@@ -21,7 +21,7 @@ function Find-OpenclawDir {
     if (Test-Path $pkg) {
       try {
         $json = Get-Content $pkg -Raw | ConvertFrom-Json
-        if ($json.name -eq "openclaw") {
+        if ($json.name -eq "lingshi") {
           return $dir
         }
       } catch {
@@ -53,28 +53,28 @@ function Ensure-Node {
   }
 }
 
-$OpenclawDir = $env:OPENCLAW_ROOT
-if (-not $OpenclawDir -or $OpenclawDir.Trim() -eq "") {
-  $OpenclawDir = Find-OpenclawDir -StartDir $ScriptDir
+$LingshiDir = $env:LINGSHI_ROOT
+if (-not $LingshiDir -or $LingshiDir.Trim() -eq "") {
+  $LingshiDir = Find-LingshiDir -StartDir $ScriptDir
 }
-if (-not $OpenclawDir) {
-  Write-Error "无法定位 OpenClaw 目录。请设置 OPENCLAW_ROOT 指向包含 package.json 的 OpenClaw 目录。"
+if (-not $LingshiDir) {
+  Write-Error "无法定位 OpenClaw 目录。请设置 LINGSHI_ROOT 指向包含 package.json 的 OpenClaw 目录。"
   exit 1
 }
 
 Ensure-Node
 
-$OpenclawCmd = @()
-if ($env:OPENCLAW_BIN -and $env:OPENCLAW_BIN.Trim() -ne "") {
-  $OpenclawCmd = $env:OPENCLAW_BIN.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
-} elseif (Get-Command openclaw -ErrorAction SilentlyContinue) {
-  $OpenclawCmd = @("openclaw")
-} elseif (Test-Path (Join-Path $OpenclawDir "scripts\run-node.mjs")) {
-  $OpenclawCmd = @("node","scripts\run-node.mjs")
+$LingshiCmd = @()
+if ($env:LINGSHI_BIN -and $env:LINGSHI_BIN.Trim() -ne "") {
+  $LingshiCmd = $env:LINGSHI_BIN.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
+} elseif (Get-Command lingshi -ErrorAction SilentlyContinue) {
+  $LingshiCmd = @("lingshi")
+} elseif (Test-Path (Join-Path $LingshiDir "scripts\run-node.mjs")) {
+  $LingshiCmd = @("node","scripts\run-node.mjs")
 } elseif (Get-Command pnpm -ErrorAction SilentlyContinue) {
-  $OpenclawCmd = @("pnpm","openclaw","--")
+  $LingshiCmd = @("pnpm","lingshi","--")
 } else {
-  Write-Error "未找到 openclaw 或 pnpm，请先安装。"
+  Write-Error "未找到 lingshi 或 pnpm，请先安装。"
   exit 1
 }
 
@@ -88,16 +88,16 @@ if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) {
   }
 }
 
-$UsingLocalOpenclaw = $true
-if ($OpenclawCmd.Length -eq 1 -and $OpenclawCmd[0] -eq "openclaw") {
-  $UsingLocalOpenclaw = $false
+$UsingLocalLingshi = $true
+if ($LingshiCmd.Length -eq 1 -and $LingshiCmd[0] -eq "lingshi") {
+  $UsingLocalLingshi = $false
 }
 
-if ($UsingLocalOpenclaw) {
-  $nodeModules = Join-Path $OpenclawDir "node_modules"
+if ($UsingLocalLingshi) {
+  $nodeModules = Join-Path $LingshiDir "node_modules"
   if (-not (Test-Path $nodeModules)) {
     Write-Host "Installing workspace dependencies (pnpm install)..."
-    Push-Location $OpenclawDir
+    Push-Location $LingshiDir
     try {
       pnpm install
     } finally {
@@ -106,16 +106,16 @@ if ($UsingLocalOpenclaw) {
   }
 }
 
-$OpenclawPrefix = @()
-if ($OpenclawCmd.Length -gt 1) {
-  $OpenclawPrefix = $OpenclawCmd[1..($OpenclawCmd.Length-1)]
+$LingshiPrefix = @()
+if ($LingshiCmd.Length -gt 1) {
+  $LingshiPrefix = $LingshiCmd[1..($LingshiCmd.Length-1)]
 }
 
-function Invoke-Openclaw {
+function Invoke-Lingshi {
   param([string[]]$Args)
-  Push-Location $OpenclawDir
+  Push-Location $LingshiDir
   try {
-    & $OpenclawCmd[0] @OpenclawPrefix @Args
+    & $LingshiCmd[0] @LingshiPrefix @Args
   } finally {
     Pop-Location
   }
@@ -123,7 +123,7 @@ function Invoke-Openclaw {
 
 function Show-Usage {
 @'
-Usage: openclaw\scripts\startup\configure_provider.ps1 [-Provider ID] [-Auth token|api-key|oauth] [-ApiKey KEY] [-Token TOKEN] [-Force]
+Usage: lingshi\scripts\startup\configure_provider.ps1 [-Provider ID] [-Auth token|api-key|oauth] [-ApiKey KEY] [-Token TOKEN] [-Force]
 
 Providers (common):
   anthropic      (token or api-key)
@@ -140,10 +140,10 @@ Providers (common):
   minimax-api-lightning (api-key)
 
 Examples:
-  .\openclaw\scripts\startup\configure_provider.ps1 -Provider anthropic -Auth token -Token "setup-token"
-  .\openclaw\scripts\startup\configure_provider.ps1 -Provider openai -Auth api-key -ApiKey "key"
-  .\openclaw\scripts\startup\configure_provider.ps1 -Provider openai-codex -Auth oauth
-  .\openclaw\scripts\startup\configure_provider.ps1 -Provider qwen-portal -Auth oauth
+  .\lingshi\scripts\startup\configure_provider.ps1 -Provider anthropic -Auth token -Token "setup-token"
+  .\lingshi\scripts\startup\configure_provider.ps1 -Provider openai -Auth api-key -ApiKey "key"
+  .\lingshi\scripts\startup\configure_provider.ps1 -Provider openai-codex -Auth oauth
+  .\lingshi\scripts\startup\configure_provider.ps1 -Provider qwen-portal -Auth oauth
 '@
 }
 
@@ -156,7 +156,7 @@ function Run-Onboard-ApiKey {
   if (-not $Key) {
     $Key = Read-Host "请输入 $Choice 的 API key"
   }
-  Invoke-Openclaw @("onboard","--non-interactive","--accept-risk","--flow","manual","--mode","local",`
+  Invoke-Lingshi @("onboard","--non-interactive","--accept-risk","--flow","manual","--mode","local",`
     "--skip-channels","--skip-skills","--skip-health","--skip-ui","--skip-daemon",`
     "--auth-choice",$Choice,$Flag,$Key)
 }
@@ -164,7 +164,7 @@ function Run-Onboard-ApiKey {
 function Test-ProviderAuth {
   param([string]$Prov)
   try {
-    $jsonText = Invoke-Openclaw @("models","status","--json") 2>$null | Out-String
+    $jsonText = Invoke-Lingshi @("models","status","--json") 2>$null | Out-String
     if (-not $jsonText -or $jsonText.Trim() -eq "") { return $false }
     $data = $jsonText | ConvertFrom-Json -ErrorAction Stop
   } catch {
@@ -261,7 +261,7 @@ switch ($Provider) {
       if (-not $Token) {
         $Token = Read-Host "请粘贴 Anthropic setup-token"
       }
-      Invoke-Openclaw @("onboard","--non-interactive","--accept-risk","--flow","manual","--mode","local",`
+      Invoke-Lingshi @("onboard","--non-interactive","--accept-risk","--flow","manual","--mode","local",`
         "--skip-channels","--skip-skills","--skip-health","--skip-ui","--skip-daemon",`
         "--auth-choice","token","--token-provider","anthropic","--token",$Token)
     } else {
@@ -269,10 +269,10 @@ switch ($Provider) {
     }
   }
   "openai" { Run-Onboard-ApiKey -Choice "openai-api-key" -Flag "--openai-api-key" -Key $ApiKey }
-  "openai-codex" { Invoke-Openclaw @("models","auth","login","--provider","openai-codex") }
+  "openai-codex" { Invoke-Lingshi @("models","auth","login","--provider","openai-codex") }
   "qwen-portal" {
-    Invoke-Openclaw @("plugins","enable","qwen-portal-auth")
-    Invoke-Openclaw @("models","auth","login","--provider","qwen-portal","--set-default")
+    Invoke-Lingshi @("plugins","enable","qwen-portal-auth")
+    Invoke-Lingshi @("models","auth","login","--provider","qwen-portal","--set-default")
   }
   "gemini" { Run-Onboard-ApiKey -Choice "gemini-api-key" -Flag "--gemini-api-key" -Key $ApiKey }
   "openrouter" { Run-Onboard-ApiKey -Choice "openrouter-api-key" -Flag "--openrouter-api-key" -Key $ApiKey }
@@ -285,7 +285,7 @@ switch ($Provider) {
   "minimax-api-lightning" { Run-Onboard-ApiKey -Choice "minimax-api-lightning" -Flag "--minimax-api-key" -Key $ApiKey }
   Default {
     if ($Auth -eq "oauth") {
-      Invoke-Openclaw @("models","auth","login","--provider",$Provider)
+      Invoke-Lingshi @("models","auth","login","--provider",$Provider)
     } else {
       Write-Error "未支持的 provider: $Provider"
       Show-Usage
@@ -294,5 +294,5 @@ switch ($Provider) {
   }
 }
 
-Write-Host "完成。建议运行: openclaw models status"
+Write-Host "完成。建议运行: lingshi models status"
 Write-Host "注意：此脚本仅配置 provider，不会启动网关。"

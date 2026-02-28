@@ -161,9 +161,9 @@ actor CameraController {
         await Self.warmUpCaptureSession()
 
         let movURL = FileManager().temporaryDirectory
-            .appendingPathComponent("openclaw-camera-\(UUID().uuidString).mov")
+            .appendingPathComponent("lingshi-camera-\(UUID().uuidString).mov")
         let mp4URL = FileManager().temporaryDirectory
-            .appendingPathComponent("openclaw-camera-\(UUID().uuidString).mp4")
+            .appendingPathComponent("lingshi-camera-\(UUID().uuidString).mp4")
 
         defer {
             try? FileManager().removeItem(at: movURL)

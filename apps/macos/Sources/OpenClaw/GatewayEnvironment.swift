@@ -68,11 +68,11 @@ struct GatewayCommandResolution {
 }
 
 enum GatewayEnvironment {
-    private static let logger = Logger(subsystem: "ai.openclaw", category: "gateway.env")
+    private static let logger = Logger(subsystem: "ai.lingshi", category: "gateway.env")
     private static let supportedBindModes: Set<String> = ["loopback", "tailnet", "lan", "auto"]
 
     static func gatewayPort() -> Int {
-        if let raw = ProcessInfo.processInfo.environment["OPENCLAW_GATEWAY_PORT"] {
+        if let raw = ProcessInfo.processInfo.environment["LINGSHI_GATEWAY_PORT"] {
             let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
             if let parsed = Int(trimmed), parsed > 0 { return parsed }
         }
@@ -123,7 +123,7 @@ enum GatewayEnvironment {
                 requiredGateway: expectedString,
                 message: RuntimeLocator.describeFailure(err))
         case let .success(runtime):
-            let gatewayBin = CommandResolver.openclawExecutable()
+            let gatewayBin = CommandResolver.lingshiExecutable()
 
             if gatewayBin == nil, projectEntrypoint == nil {
                 return GatewayEnvironmentStatus(
@@ -131,7 +131,7 @@ enum GatewayEnvironment {
                     nodeVersion: runtime.version.description,
                     gatewayVersion: nil,
                     requiredGateway: expectedString,
-                    message: "openclaw CLI not found in PATH; install the CLI.")
+                    message: "lingshi CLI not found in PATH; install the CLI.")
             }
 
             let installed = gatewayBin.flatMap { self.readGatewayVersion(binary: $0) }
@@ -181,7 +181,7 @@ enum GatewayEnvironment {
         let projectRoot = CommandResolver.projectRoot()
         let projectEntrypoint = CommandResolver.gatewayEntrypoint(in: projectRoot)
         let status = self.check()
-        let gatewayBin = CommandResolver.openclawExecutable()
+        let gatewayBin = CommandResolver.lingshiExecutable()
         let runtime = RuntimeLocator.resolve(searchPaths: CommandResolver.preferredPaths())
 
         guard case .ok = status.kind else {
@@ -210,7 +210,7 @@ enum GatewayEnvironment {
         if CommandResolver.connectionModeIsRemote() {
             return nil
         }
-        if let env = ProcessInfo.processInfo.environment["OPENCLAW_GATEWAY_BIND"] {
+        if let env = ProcessInfo.processInfo.environment["LINGSHI_GATEWAY_BIND"] {
             let trimmed = env.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             if self.supportedBindModes.contains(trimmed) {
                 return trimmed
@@ -247,16 +247,16 @@ enum GatewayEnvironment {
         let bun = CommandResolver.findExecutable(named: "bun")
         let (label, cmd): (String, [String]) =
             if let npm {
-                ("npm", [npm, "install", "-g", "openclaw@\(target)"])
+                ("npm", [npm, "install", "-g", "lingshi@\(target)"])
             } else if let pnpm {
-                ("pnpm", [pnpm, "add", "-g", "openclaw@\(target)"])
+                ("pnpm", [pnpm, "add", "-g", "lingshi@\(target)"])
             } else if let bun {
-                ("bun", [bun, "add", "-g", "openclaw@\(target)"])
+                ("bun", [bun, "add", "-g", "lingshi@\(target)"])
             } else {
-                ("npm", ["npm", "install", "-g", "openclaw@\(target)"])
+                ("npm", ["npm", "install", "-g", "lingshi@\(target)"])
             }
 
-        statusHandler("Installing openclaw@\(target) via \(label)…")
+        statusHandler("Installing lingshi@\(target) via \(label)…")
 
         func summarize(_ text: String) -> String? {
             let lines = text
@@ -270,7 +270,7 @@ enum GatewayEnvironment {
 
         let response = await ShellExecutor.runDetailed(command: cmd, cwd: nil, env: ["PATH": preferred], timeout: 300)
         if response.success {
-            statusHandler("Installed openclaw@\(target)")
+            statusHandler("Installed lingshi@\(target)")
         } else {
             if response.timedOut {
                 statusHandler("Install failed: timed out. Check your internet connection and try again.")

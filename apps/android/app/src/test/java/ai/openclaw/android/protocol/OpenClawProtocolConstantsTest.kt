@@ -1,4 +1,4 @@
-package ai.openclaw.android.protocol
+package ai.lingshi.android.protocol
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

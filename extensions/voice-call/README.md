@@ -1,4 +1,4 @@
-# @openclaw/voice-call
+# @lingshi/voice-call
 
 Official Voice Call plugin for **OpenClaw**.
 
@@ -9,15 +9,15 @@ Providers:
 - **Plivo** (Voice API + XML transfer + GetInput speech)
 - **Mock** (dev/no network)
 
-Docs: `https://docs.openclaw.ai/plugins/voice-call`
-Plugin system: `https://docs.openclaw.ai/plugin`
+Docs: `https://docs.lingshi.ai/plugins/voice-call`
+Plugin system: `https://docs.lingshi.ai/plugin`
 
 ## Install (local dev)
 
 ### Option A: install via OpenClaw (recommended)
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+lingshi plugins install @lingshi/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -25,9 +25,9 @@ Restart the Gateway afterwards.
 ### Option B: copy into your global extensions folder (dev)
 
 ```bash
-mkdir -p ~/.openclaw/extensions
-cp -R extensions/voice-call ~/.openclaw/extensions/voice-call
-cd ~/.openclaw/extensions/voice-call && pnpm install
+mkdir -p ~/.lingshi/extensions
+cp -R extensions/voice-call ~/.lingshi/extensions/voice-call
+cd ~/.lingshi/extensions/voice-call && pnpm install
 ```
 
 ## Config
@@ -103,13 +103,13 @@ Notes:
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+lingshi voicecall call --to "+15555550123" --message "Hello from OpenClaw"
+lingshi voicecall continue --call-id <id> --message "Any questions?"
+lingshi voicecall speak --call-id <id> --message "One moment"
+lingshi voicecall end --call-id <id>
+lingshi voicecall status --call-id <id>
+lingshi voicecall tail
+lingshi voicecall expose --mode funnel
 ```
 
 ## Tool

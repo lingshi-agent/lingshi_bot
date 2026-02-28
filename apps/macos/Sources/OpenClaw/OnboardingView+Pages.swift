@@ -228,7 +228,7 @@ extension OnboardingView {
                                         Text("Project root")
                                             .font(.callout.weight(.semibold))
                                             .frame(width: labelWidth, alignment: .leading)
-                                        TextField("/home/you/Projects/openclaw", text: self.$state.remoteProjectRoot)
+                                        TextField("/home/you/Projects/lingshi", text: self.$state.remoteProjectRoot)
                                             .textFieldStyle(.roundedBorder)
                                             .frame(width: fieldWidth)
                                     }
@@ -237,7 +237,7 @@ extension OnboardingView {
                                             .font(.callout.weight(.semibold))
                                             .frame(width: labelWidth, alignment: .leading)
                                         TextField(
-                                            "/Applications/OpenClaw.app/.../openclaw",
+                                            "/Applications/OpenClaw.app/.../lingshi",
                                             text: self.$state.remoteCliPath)
                                             .textFieldStyle(.roundedBorder)
                                             .frame(width: fieldWidth)
@@ -376,7 +376,7 @@ extension OnboardingView {
 
                 Text(
                     "This lets OpenClaw use Claude immediately. Credentials are stored at " +
-                        "`~/.openclaw/credentials/oauth.json` (owner-only).")
+                        "`~/.lingshi/credentials/oauth.json` (owner-only).")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -534,7 +534,7 @@ extension OnboardingView {
         self.onboardingPage {
             Text("Install the CLI")
                 .font(.largeTitle.weight(.semibold))
-            Text("Required for local mode: installs `openclaw` so launchd can run the gateway.")
+            Text("Required for local mode: installs `lingshi` so launchd can run the gateway.")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -651,7 +651,7 @@ extension OnboardingView {
                                     let saved = await self.saveAgentWorkspace(AgentWorkspace.displayPath(for: url))
                                     if saved {
                                         self.workspaceStatus =
-                                            "Saved to ~/.openclaw/openclaw.json (agents.defaults.workspace)"
+                                            "Saved to ~/.lingshi/lingshi.json (agents.defaults.workspace)"
                                     }
                                 }
                             }
@@ -719,8 +719,8 @@ extension OnboardingView {
                     self.featureRow(
                         title: "Remote gateway checklist",
                         subtitle: """
-                        On your gateway host: install/update the `openclaw` package and make sure credentials exist
-                        (typically `~/.openclaw/credentials/oauth.json`). Then connect again if needed.
+                        On your gateway host: install/update the `lingshi` package and make sure credentials exist
+                        (typically `~/.lingshi/credentials/oauth.json`). Then connect again if needed.
                         """,
                         systemImage: "network")
                     Divider()

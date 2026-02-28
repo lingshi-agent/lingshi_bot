@@ -35,7 +35,7 @@ export const TOOL_GROUPS: Record<string, string[]> = {
   // Nodes + device tools
   "group:nodes": ["nodes"],
   // All OpenClaw native tools (excludes provider plugins).
-  "group:openclaw": [
+  "group:lingshi": [
     "browser",
     "canvas",
     "nodes",

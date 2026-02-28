@@ -53,7 +53,7 @@ export function renderOverview(props: OverviewProps) {
           <div style="margin-top: 6px">
             <a
               class="session-link"
-              href="https://docs.openclaw.ai/web/dashboard"
+              href="https://docs.lingshi.ai/web/dashboard"
               target="_blank"
               rel="noreferrer"
               title=${tr("overview.auth.docs.openInNewTab")}
@@ -66,11 +66,11 @@ export function renderOverview(props: OverviewProps) {
     return html`
       <div class="muted" style="margin-top: 8px">
         ${tr("overview.auth.failed")}
-        <span class="mono">openclaw dashboard --no-open</span>${tr("overview.auth.failed.suffix")}
+        <span class="mono">lingshi dashboard --no-open</span>${tr("overview.auth.failed.suffix")}
         <div style="margin-top: 6px">
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/web/dashboard"
+            href="https://docs.lingshi.ai/web/dashboard"
             target="_blank"
             rel="noreferrer"
             title=${tr("overview.auth.docs.openInNewTab")}
@@ -104,7 +104,7 @@ export function renderOverview(props: OverviewProps) {
         <div style="margin-top: 6px">
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/gateway/tailscale"
+            href="https://docs.lingshi.ai/gateway/tailscale"
             target="_blank"
             rel="noreferrer"
             title=${tr("overview.http.docs.tailscale.openInNewTab")}
@@ -113,7 +113,7 @@ export function renderOverview(props: OverviewProps) {
           <span class="muted"> · </span>
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/web/control-ui#insecure-http"
+            href="https://docs.lingshi.ai/web/control-ui#insecure-http"
             target="_blank"
             rel="noreferrer"
             title=${tr("overview.http.docs.insecure.openInNewTab")}

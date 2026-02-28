@@ -15,7 +15,7 @@ export async function setupInternalHooks(
       "Hooks let you automate actions when agent commands are issued.",
       "Example: Save session context to memory when you issue /new.",
       "",
-      "Learn more: https://docs.openclaw.ai/hooks",
+      "Learn more: https://docs.lingshi.ai/hooks",
     ].join("\n"),
     "Hooks",
   );
@@ -74,9 +74,9 @@ export async function setupInternalHooks(
       `Enabled ${selected.length} hook${selected.length > 1 ? "s" : ""}: ${selected.join(", ")}`,
       "",
       "You can manage hooks later with:",
-      `  ${formatCliCommand("openclaw hooks list")}`,
-      `  ${formatCliCommand("openclaw hooks enable <name>")}`,
-      `  ${formatCliCommand("openclaw hooks disable <name>")}`,
+      `  ${formatCliCommand("lingshi hooks list")}`,
+      `  ${formatCliCommand("lingshi hooks enable <name>")}`,
+      `  ${formatCliCommand("lingshi hooks disable <name>")}`,
     ].join("\n"),
     "Hooks Configured",
   );

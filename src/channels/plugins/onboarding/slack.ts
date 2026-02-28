@@ -54,7 +54,7 @@ function buildSlackManifest(botName: string) {
       },
       slash_commands: [
         {
-          command: "/openclaw",
+          command: "/lingshi",
           description: "Send a message to OpenClaw",
           should_escape: false,
         },

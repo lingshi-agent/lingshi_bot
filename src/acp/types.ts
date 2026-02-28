@@ -23,7 +23,7 @@ export type AcpServerOptions = {
 };
 
 export const ACP_AGENT_INFO = {
-  name: "openclaw-acp",
+  name: "lingshi-acp",
   title: "OpenClaw ACP Gateway",
   version: VERSION,
 };

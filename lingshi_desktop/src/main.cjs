@@ -247,7 +247,7 @@ function applyWindowTab(tab) {
   statusWindow.webContents
     .executeJavaScript(
       `(() => {
-        const app = document.querySelector("openclaw-app");
+        const app = document.querySelector("lingshi-app");
         if (!app || typeof app.setTab !== "function") return false;
         app.setTab(${JSON.stringify(nextTab)});
         return true;
@@ -262,7 +262,7 @@ function gatewayArgs() {
     throw new Error("gateway_port_not_resolved");
   }
   return [
-    "openclaw.mjs",
+    "lingshi.mjs",
     "gateway",
     "--port",
     String(gatewayPort),

@@ -15,7 +15,7 @@ on:
       - "extensions/**"
       - "src/**"
       - "scripts/**"
-      - "openclaw.mjs"
+      - "lingshi.mjs"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"

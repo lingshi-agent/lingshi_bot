@@ -21,7 +21,7 @@ const bundleRoot = resolve(desktopRoot, ".bundle", "lingshi_bot");
 const runtimeRoot = resolve(desktopRoot, "runtime");
 const bundledNode = resolve(runtimeRoot, process.platform === "win32" ? "node.exe" : "node");
 const requiredBundlePaths = [
-  { src: resolve(botRoot, "openclaw.mjs"), dst: resolve(bundleRoot, "openclaw.mjs") },
+  { src: resolve(botRoot, "lingshi.mjs"), dst: resolve(bundleRoot, "lingshi.mjs") },
   { src: resolve(botRoot, "dist"), dst: resolve(bundleRoot, "dist") },
 ];
 const requiredDistEntry = resolve(botRoot, "dist", "entry.js");
@@ -53,7 +53,7 @@ function runPnpm(pnpmArgs) {
 
 function ensureRuntimeArtifacts() {
   if (!existsSync(requiredDistEntry)) {
-    console.log("dist/entry.js missing, building openclaw runtime artifacts...");
+    console.log("dist/entry.js missing, building lingshi runtime artifacts...");
     runPnpm(["run", "build"]);
   }
 
@@ -78,7 +78,7 @@ function runPnpmDeploy() {
     "--config.inject-workspace-packages=true",
     "--config.node-linker=hoisted",
     "--filter",
-    "openclaw",
+    "lingshi",
     "--prod",
     "deploy",
     bundleRoot,

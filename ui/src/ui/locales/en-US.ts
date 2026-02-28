@@ -77,8 +77,8 @@ export const enUS = {
   "overview.notes.cronRemindersHint": "Use isolated sessions for recurring runs.",
   "overview.auth.required":
     "This gateway requires auth. Add a token or password, then click Connect.",
-  "overview.auth.howToGetTokenizedUrl": "openclaw dashboard --no-open → tokenized URL",
-  "overview.auth.howToSetToken": "openclaw doctor --generate-gateway-token → set token",
+  "overview.auth.howToGetTokenizedUrl": "lingshi dashboard --no-open → tokenized URL",
+  "overview.auth.howToSetToken": "lingshi doctor --generate-gateway-token → set token",
   "overview.auth.docs": "Docs: Control UI auth",
   "overview.auth.docs.openInNewTab": "Control UI auth docs (opens in new tab)",
   "overview.auth.failed": "Auth failed. Re-copy a tokenized URL with",

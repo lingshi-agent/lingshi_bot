@@ -9,11 +9,11 @@ import Security
 final class PeekabooBridgeHostCoordinator {
     static let shared = PeekabooBridgeHostCoordinator()
 
-    private let logger = Logger(subsystem: "ai.openclaw", category: "PeekabooBridge")
+    private let logger = Logger(subsystem: "ai.lingshi", category: "PeekabooBridge")
 
     private var host: PeekabooBridgeHost?
     private var services: OpenClawPeekabooBridgeServices?
-    private static var openclawSocketPath: String {
+    private static var lingshiSocketPath: String {
         let fileManager = FileManager.default
         let base = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? fileManager.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support")
@@ -54,7 +54,7 @@ final class PeekabooBridgeHostCoordinator {
             allowlistedBundles: allowlistedBundles)
 
         let host = PeekabooBridgeHost(
-            socketPath: Self.openclawSocketPath,
+            socketPath: Self.lingshiSocketPath,
             server: server,
             allowedTeamIDs: allowlistedTeamIDs,
             requestTimeoutSec: 10)
@@ -64,7 +64,7 @@ final class PeekabooBridgeHostCoordinator {
 
         await host.start()
         self.logger
-            .info("PeekabooBridge host started at \(Self.openclawSocketPath, privacy: .public)")
+            .info("PeekabooBridge host started at \(Self.lingshiSocketPath, privacy: .public)")
     }
 
     private static func currentTeamID() -> String? {
@@ -109,7 +109,7 @@ private final class OpenClawPeekabooBridgeServices: PeekabooBridgeServiceProvidi
     let snapshots: any SnapshotManagerProtocol
 
     init() {
-        let logging = LoggingService(subsystem: "ai.openclaw.peekaboo")
+        let logging = LoggingService(subsystem: "ai.lingshi.peekaboo")
         let feedbackClient: any AutomationFeedbackClient = NoopAutomationFeedbackClient()
 
         let snapshots = InMemorySnapshotManager(options: .init(

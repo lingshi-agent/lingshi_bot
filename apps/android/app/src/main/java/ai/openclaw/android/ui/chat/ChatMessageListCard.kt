@@ -1,4 +1,4 @@
-package ai.openclaw.android.ui.chat
+package ai.lingshi.android.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import ai.openclaw.android.chat.ChatMessage
-import ai.openclaw.android.chat.ChatPendingToolCall
+import ai.lingshi.android.chat.ChatMessage
+import ai.lingshi.android.chat.ChatPendingToolCall
 
 @Composable
 fun ChatMessageListCard(

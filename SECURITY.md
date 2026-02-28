@@ -20,9 +20,9 @@ The best way to help the project right now is by sending PRs.
 
 ## Operational Guidance
 
-For threat model + hardening guidance (including `openclaw security audit --deep` and `--fix`), see:
+For threat model + hardening guidance (including `lingshi security audit --deep` and `--fix`), see:
 
-- `https://docs.openclaw.ai/gateway/security`
+- `https://docs.lingshi.ai/gateway/security`
 
 ### Web Interface Safety
 
@@ -55,8 +55,8 @@ Example secure Docker run:
 
 ```bash
 docker run --read-only --cap-drop=ALL \
-  -v openclaw-data:/app/data \
-  openclaw/openclaw:latest
+  -v lingshi-data:/app/data \
+  lingshi/lingshi:latest
 ```
 
 ## Security Scanning

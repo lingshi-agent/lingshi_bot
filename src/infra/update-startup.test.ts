@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { UpdateCheckResult } from "./update-check.js";
 
-vi.mock("./openclaw-root.js", () => ({
+vi.mock("./lingshi-root.js", () => ({
   resolveOpenClawPackageRoot: vi.fn(),
 }));
 
@@ -29,8 +29,8 @@ describe("update-startup", () => {
   beforeEach(async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-17T10:00:00Z"));
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-check-"));
-    process.env.OPENCLAW_STATE_DIR = tempDir;
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-update-check-"));
+    process.env.LINGSHI_STATE_DIR = tempDir;
     delete process.env.VITEST;
     process.env.NODE_ENV = "test";
   });
@@ -42,13 +42,13 @@ describe("update-startup", () => {
   });
 
   it("logs update hint for npm installs when newer tag exists", async () => {
-    const { resolveOpenClawPackageRoot } = await import("./openclaw-root.js");
+    const { resolveOpenClawPackageRoot } = await import("./lingshi-root.js");
     const { checkUpdateStatus, resolveNpmChannelTag } = await import("./update-check.js");
     const { runGatewayUpdateCheck } = await import("./update-startup.js");
 
-    vi.mocked(resolveOpenClawPackageRoot).mockResolvedValue("/opt/openclaw");
+    vi.mocked(resolveOpenClawPackageRoot).mockResolvedValue("/opt/lingshi");
     vi.mocked(checkUpdateStatus).mockResolvedValue({
-      root: "/opt/openclaw",
+      root: "/opt/lingshi",
       installKind: "package",
       packageManager: "npm",
     } satisfies UpdateCheckResult);
@@ -76,13 +76,13 @@ describe("update-startup", () => {
   });
 
   it("uses latest when beta tag is older than release", async () => {
-    const { resolveOpenClawPackageRoot } = await import("./openclaw-root.js");
+    const { resolveOpenClawPackageRoot } = await import("./lingshi-root.js");
     const { checkUpdateStatus, resolveNpmChannelTag } = await import("./update-check.js");
     const { runGatewayUpdateCheck } = await import("./update-startup.js");
 
-    vi.mocked(resolveOpenClawPackageRoot).mockResolvedValue("/opt/openclaw");
+    vi.mocked(resolveOpenClawPackageRoot).mockResolvedValue("/opt/lingshi");
     vi.mocked(checkUpdateStatus).mockResolvedValue({
-      root: "/opt/openclaw",
+      root: "/opt/lingshi",
       installKind: "package",
       packageManager: "npm",
     } satisfies UpdateCheckResult);

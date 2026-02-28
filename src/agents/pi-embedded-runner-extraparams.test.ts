@@ -86,7 +86,7 @@ describe("applyExtraParamsToAgent", () => {
 
     expect(calls).toHaveLength(1);
     expect(calls[0]?.headers).toEqual({
-      "HTTP-Referer": "https://openclaw.ai",
+      "HTTP-Referer": "https://www.wehelper.cloud",
       "X-Title": "OpenClaw",
       "X-Custom": "1",
     });

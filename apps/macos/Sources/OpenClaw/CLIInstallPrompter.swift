@@ -5,7 +5,7 @@ import OSLog
 @MainActor
 final class CLIInstallPrompter {
     static let shared = CLIInstallPrompter()
-    private let logger = Logger(subsystem: "ai.openclaw", category: "cli.prompt")
+    private let logger = Logger(subsystem: "ai.lingshi", category: "cli.prompt")
     private var isPrompting = false
 
     func checkAndPromptIfNeeded(reason: String) {
@@ -62,7 +62,7 @@ final class CLIInstallPrompter {
         SettingsTabRouter.request(tab)
         SettingsWindowOpener.shared.open()
         DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .openclawSelectSettingsTab, object: tab)
+            NotificationCenter.default.post(name: .lingshiSelectSettingsTab, object: tab)
         }
     }
 

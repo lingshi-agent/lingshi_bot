@@ -1,5 +1,5 @@
 {
-  "name": "@openclaw/twitch",
+  "name": "@lingshi/twitch",
   "version": "2026.2.2",
   "description": "OpenClaw Twitch channel plugin",
   "type": "module",
@@ -10,9 +10,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ]

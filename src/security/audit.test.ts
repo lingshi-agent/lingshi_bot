@@ -122,10 +122,10 @@ describe("security audit", () => {
   });
 
   it("treats Windows ACL-only perms as secure", async () => {
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-win-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-win-"));
     const stateDir = path.join(tmp, "state");
     await fs.mkdir(stateDir, { recursive: true });
-    const configPath = path.join(stateDir, "openclaw.json");
+    const configPath = path.join(stateDir, "lingshi.json");
     await fs.writeFile(configPath, "{}\n", "utf-8");
 
     const user = "DESKTOP-TEST\\Tester";
@@ -159,10 +159,10 @@ describe("security audit", () => {
   });
 
   it("flags Windows ACLs when Users can read the state dir", async () => {
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-win-open-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-win-open-"));
     const stateDir = path.join(tmp, "state");
     await fs.mkdir(stateDir, { recursive: true });
-    const configPath = path.join(stateDir, "openclaw.json");
+    const configPath = path.join(stateDir, "lingshi.json");
     await fs.writeFile(configPath, "{}\n", "utf-8");
 
     const user = "DESKTOP-TEST\\Tester";
@@ -390,9 +390,9 @@ describe("security audit", () => {
   });
 
   it("flags Discord native commands without a guild user allowlist", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-discord-"));
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-discord-"));
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -429,19 +429,19 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
 
   it("does not flag Discord slash commands when dm.allowFrom includes a Discord snowflake id", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
     const tmp = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-security-audit-discord-allowfrom-snowflake-"),
+      path.join(os.tmpdir(), "lingshi-security-audit-discord-allowfrom-snowflake-"),
     );
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -478,17 +478,17 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
 
   it("flags Discord slash commands when access-group enforcement is disabled and no users allowlist exists", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-discord-open-"));
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-discord-open-"));
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -526,17 +526,17 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
 
   it("flags Slack slash commands without a channel users allowlist", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-slack-"));
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-slack-"));
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -568,17 +568,17 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
 
   it("flags Slack slash commands when access-group enforcement is disabled", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-slack-open-"));
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-slack-open-"));
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -611,17 +611,17 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
 
   it("flags Telegram group commands without a sender allowlist", async () => {
-    const prevStateDir = process.env.OPENCLAW_STATE_DIR;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-telegram-"));
-    process.env.OPENCLAW_STATE_DIR = tmp;
+    const prevStateDir = process.env.LINGSHI_STATE_DIR;
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-telegram-"));
+    process.env.LINGSHI_STATE_DIR = tmp;
     await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
@@ -652,9 +652,9 @@ describe("security audit", () => {
       );
     } finally {
       if (prevStateDir == null) {
-        delete process.env.OPENCLAW_STATE_DIR;
+        delete process.env.LINGSHI_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = prevStateDir;
+        process.env.LINGSHI_STATE_DIR = prevStateDir;
       }
     }
   });
@@ -783,8 +783,8 @@ describe("security audit", () => {
   });
 
   it("warns when hooks token reuses the gateway env token", async () => {
-    const prevToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "shared-gateway-token-1234567890";
+    const prevToken = process.env.LINGSHI_GATEWAY_TOKEN;
+    process.env.LINGSHI_GATEWAY_TOKEN = "shared-gateway-token-1234567890";
     const cfg: OpenClawConfig = {
       hooks: { enabled: true, token: "shared-gateway-token-1234567890" },
     };
@@ -803,9 +803,9 @@ describe("security audit", () => {
       );
     } finally {
       if (prevToken === undefined) {
-        delete process.env.OPENCLAW_GATEWAY_TOKEN;
+        delete process.env.LINGSHI_GATEWAY_TOKEN;
       } else {
-        process.env.OPENCLAW_GATEWAY_TOKEN = prevToken;
+        process.env.LINGSHI_GATEWAY_TOKEN = prevToken;
       }
     }
   });
@@ -817,8 +817,8 @@ describe("security audit", () => {
       config: cfg,
       includeFilesystem: false,
       includeChannelSecurity: false,
-      stateDir: "/Users/test/Dropbox/.openclaw",
-      configPath: "/Users/test/Dropbox/.openclaw/openclaw.json",
+      stateDir: "/Users/test/Dropbox/.lingshi",
+      configPath: "/Users/test/Dropbox/.lingshi/lingshi.json",
     });
 
     expect(res.findings).toEqual(
@@ -829,7 +829,7 @@ describe("security audit", () => {
   });
 
   it("flags group/world-readable config include files", async () => {
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-"));
     const stateDir = path.join(tmp, "state");
     await fs.mkdir(stateDir, { recursive: true, mode: 0o700 });
 
@@ -843,7 +843,7 @@ describe("security audit", () => {
       await fs.chmod(includePath, 0o644);
     }
 
-    const configPath = path.join(stateDir, "openclaw.json");
+    const configPath = path.join(stateDir, "lingshi.json");
     await fs.writeFile(configPath, `{ "$include": "./extra.json5" }\n`, "utf-8");
     await fs.chmod(configPath, 0o600);
 
@@ -902,7 +902,7 @@ describe("security audit", () => {
     delete process.env.TELEGRAM_BOT_TOKEN;
     delete process.env.SLACK_BOT_TOKEN;
     delete process.env.SLACK_APP_TOKEN;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-"));
     const stateDir = path.join(tmp, "state");
     await fs.mkdir(path.join(stateDir, "extensions", "some-plugin"), {
       recursive: true,
@@ -916,7 +916,7 @@ describe("security audit", () => {
         includeFilesystem: true,
         includeChannelSecurity: false,
         stateDir,
-        configPath: path.join(stateDir, "openclaw.json"),
+        configPath: path.join(stateDir, "lingshi.json"),
       });
 
       expect(res.findings).toEqual(
@@ -951,7 +951,7 @@ describe("security audit", () => {
   it("flags unallowlisted extensions as critical when native skill commands are exposed", async () => {
     const prevDiscordToken = process.env.DISCORD_BOT_TOKEN;
     delete process.env.DISCORD_BOT_TOKEN;
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "lingshi-security-audit-"));
     const stateDir = path.join(tmp, "state");
     await fs.mkdir(path.join(stateDir, "extensions", "some-plugin"), {
       recursive: true,
@@ -969,7 +969,7 @@ describe("security audit", () => {
         includeFilesystem: true,
         includeChannelSecurity: false,
         stateDir,
-        configPath: path.join(stateDir, "openclaw.json"),
+        configPath: path.join(stateDir, "lingshi.json"),
       });
 
       expect(res.findings).toEqual(
@@ -1012,24 +1012,24 @@ describe("security audit", () => {
   });
 
   describe("maybeProbeGateway auth selection", () => {
-    const originalEnvToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    const originalEnvPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
+    const originalEnvToken = process.env.LINGSHI_GATEWAY_TOKEN;
+    const originalEnvPassword = process.env.LINGSHI_GATEWAY_PASSWORD;
 
     beforeEach(() => {
-      delete process.env.OPENCLAW_GATEWAY_TOKEN;
-      delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+      delete process.env.LINGSHI_GATEWAY_TOKEN;
+      delete process.env.LINGSHI_GATEWAY_PASSWORD;
     });
 
     afterEach(() => {
       if (originalEnvToken == null) {
-        delete process.env.OPENCLAW_GATEWAY_TOKEN;
+        delete process.env.LINGSHI_GATEWAY_TOKEN;
       } else {
-        process.env.OPENCLAW_GATEWAY_TOKEN = originalEnvToken;
+        process.env.LINGSHI_GATEWAY_TOKEN = originalEnvToken;
       }
       if (originalEnvPassword == null) {
-        delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+        delete process.env.LINGSHI_GATEWAY_PASSWORD;
       } else {
-        process.env.OPENCLAW_GATEWAY_PASSWORD = originalEnvPassword;
+        process.env.LINGSHI_GATEWAY_PASSWORD = originalEnvPassword;
       }
     });
 
@@ -1068,7 +1068,7 @@ describe("security audit", () => {
     });
 
     it("prefers env token over local config token", async () => {
-      process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+      process.env.LINGSHI_GATEWAY_TOKEN = "env-token";
       let capturedAuth: { token?: string; password?: string } | undefined;
       const cfg: OpenClawConfig = {
         gateway: {
@@ -1174,7 +1174,7 @@ describe("security audit", () => {
     });
 
     it("ignores env token when gateway.mode is remote", async () => {
-      process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+      process.env.LINGSHI_GATEWAY_TOKEN = "env-token";
       let capturedAuth: { token?: string; password?: string } | undefined;
       const cfg: OpenClawConfig = {
         gateway: {
@@ -1250,7 +1250,7 @@ describe("security audit", () => {
     });
 
     it("prefers env password over remote password", async () => {
-      process.env.OPENCLAW_GATEWAY_PASSWORD = "env-pass";
+      process.env.LINGSHI_GATEWAY_PASSWORD = "env-pass";
       let capturedAuth: { token?: string; password?: string } | undefined;
       const cfg: OpenClawConfig = {
         gateway: {

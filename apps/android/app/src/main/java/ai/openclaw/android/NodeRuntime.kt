@@ -1,4 +1,4 @@
-package ai.openclaw.android
+package ai.lingshi.android
 
 import android.Manifest
 import android.content.Context
@@ -7,35 +7,35 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
-import ai.openclaw.android.chat.ChatController
-import ai.openclaw.android.chat.ChatMessage
-import ai.openclaw.android.chat.ChatPendingToolCall
-import ai.openclaw.android.chat.ChatSessionEntry
-import ai.openclaw.android.chat.OutgoingAttachment
-import ai.openclaw.android.gateway.DeviceAuthStore
-import ai.openclaw.android.gateway.DeviceIdentityStore
-import ai.openclaw.android.gateway.GatewayClientInfo
-import ai.openclaw.android.gateway.GatewayConnectOptions
-import ai.openclaw.android.gateway.GatewayDiscovery
-import ai.openclaw.android.gateway.GatewayEndpoint
-import ai.openclaw.android.gateway.GatewaySession
-import ai.openclaw.android.gateway.GatewayTlsParams
-import ai.openclaw.android.node.CameraCaptureManager
-import ai.openclaw.android.node.LocationCaptureManager
-import ai.openclaw.android.BuildConfig
-import ai.openclaw.android.node.CanvasController
-import ai.openclaw.android.node.ScreenRecordManager
-import ai.openclaw.android.node.SmsManager
-import ai.openclaw.android.protocol.OpenClawCapability
-import ai.openclaw.android.protocol.OpenClawCameraCommand
-import ai.openclaw.android.protocol.OpenClawCanvasA2UIAction
-import ai.openclaw.android.protocol.OpenClawCanvasA2UICommand
-import ai.openclaw.android.protocol.OpenClawCanvasCommand
-import ai.openclaw.android.protocol.OpenClawScreenCommand
-import ai.openclaw.android.protocol.OpenClawLocationCommand
-import ai.openclaw.android.protocol.OpenClawSmsCommand
-import ai.openclaw.android.voice.TalkModeManager
-import ai.openclaw.android.voice.VoiceWakeManager
+import ai.lingshi.android.chat.ChatController
+import ai.lingshi.android.chat.ChatMessage
+import ai.lingshi.android.chat.ChatPendingToolCall
+import ai.lingshi.android.chat.ChatSessionEntry
+import ai.lingshi.android.chat.OutgoingAttachment
+import ai.lingshi.android.gateway.DeviceAuthStore
+import ai.lingshi.android.gateway.DeviceIdentityStore
+import ai.lingshi.android.gateway.GatewayClientInfo
+import ai.lingshi.android.gateway.GatewayConnectOptions
+import ai.lingshi.android.gateway.GatewayDiscovery
+import ai.lingshi.android.gateway.GatewayEndpoint
+import ai.lingshi.android.gateway.GatewaySession
+import ai.lingshi.android.gateway.GatewayTlsParams
+import ai.lingshi.android.node.CameraCaptureManager
+import ai.lingshi.android.node.LocationCaptureManager
+import ai.lingshi.android.BuildConfig
+import ai.lingshi.android.node.CanvasController
+import ai.lingshi.android.node.ScreenRecordManager
+import ai.lingshi.android.node.SmsManager
+import ai.lingshi.android.protocol.OpenClawCapability
+import ai.lingshi.android.protocol.OpenClawCameraCommand
+import ai.lingshi.android.protocol.OpenClawCanvasA2UIAction
+import ai.lingshi.android.protocol.OpenClawCanvasA2UICommand
+import ai.lingshi.android.protocol.OpenClawCanvasCommand
+import ai.lingshi.android.protocol.OpenClawScreenCommand
+import ai.lingshi.android.protocol.OpenClawLocationCommand
+import ai.lingshi.android.protocol.OpenClawSmsCommand
+import ai.lingshi.android.voice.TalkModeManager
+import ai.lingshi.android.voice.VoiceWakeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -529,7 +529,7 @@ class NodeRuntime(context: Context) {
       caps = buildCapabilities(),
       commands = buildInvokeCommands(),
       permissions = emptyMap(),
-      client = buildClientInfo(clientId = "openclaw-android", clientMode = "node"),
+      client = buildClientInfo(clientId = "lingshi-android", clientMode = "node"),
       userAgent = buildUserAgent(),
     )
   }
@@ -541,7 +541,7 @@ class NodeRuntime(context: Context) {
       caps = emptyList(),
       commands = emptyList(),
       permissions = emptyMap(),
-      client = buildClientInfo(clientId = "openclaw-control-ui", clientMode = "ui"),
+      client = buildClientInfo(clientId = "lingshi-control-ui", clientMode = "ui"),
       userAgent = buildUserAgent(),
     )
   }
@@ -1115,7 +1115,7 @@ class NodeRuntime(context: Context) {
     val raw = if (nodeRaw.isNotBlank()) nodeRaw else operatorRaw
     if (raw.isBlank()) return null
     val base = raw.trimEnd('/')
-    return "${base}/__openclaw__/a2ui/?platform=android"
+    return "${base}/__lingshi__/a2ui/?platform=android"
   }
 
   private suspend fun ensureA2uiReady(a2uiUrl: String): Boolean {
@@ -1207,7 +1207,7 @@ private const val a2uiReadyCheckJS: String =
   """
   (() => {
     try {
-      const host = globalThis.openclawA2UI;
+      const host = globalThis.lingshiA2UI;
       return !!host && typeof host.applyMessages === 'function';
     } catch (_) {
       return false;
@@ -1219,8 +1219,8 @@ private const val a2uiResetJS: String =
   """
   (() => {
     try {
-      const host = globalThis.openclawA2UI;
-      if (!host) return { ok: false, error: "missing openclawA2UI" };
+      const host = globalThis.lingshiA2UI;
+      if (!host) return { ok: false, error: "missing lingshiA2UI" };
       return host.reset();
     } catch (e) {
       return { ok: false, error: String(e?.message ?? e) };
@@ -1232,8 +1232,8 @@ private fun a2uiApplyMessagesJS(messagesJson: String): String {
   return """
     (() => {
       try {
-        const host = globalThis.openclawA2UI;
-        if (!host) return { ok: false, error: "missing openclawA2UI" };
+        const host = globalThis.lingshiA2UI;
+        if (!host) return { ok: false, error: "missing lingshiA2UI" };
         const messages = $messagesJson;
         return host.applyMessages(messages);
       } catch (e) {

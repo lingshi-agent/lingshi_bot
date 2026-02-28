@@ -1,4 +1,4 @@
-import type { PluginRuntime } from "openclaw/plugin-sdk";
+import type { PluginRuntime } from "lingshi/plugin-sdk";
 import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -355,7 +355,7 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     return typeof record.summary === "string" ? record.summary.trim() : "";
   };
 
-  const resolveLocalOpenclaw = (): { argvPrefix: string[]; cwd: string } | null => {
+  const resolveLocalLingshi = (): { argvPrefix: string[]; cwd: string } | null => {
     const candidates = [
       params.wehelperDir,
       process.cwd(),
@@ -368,7 +368,7 @@ export function createWecomKfRuntime(params: RuntimeParams) {
         continue;
       }
       seen.add(base);
-      const entry = path.join(base, "openclaw.mjs");
+      const entry = path.join(base, "lingshi.mjs");
       try {
         if (fs.existsSync(entry)) {
           const nodeExec = process.execPath && process.execPath.trim() ? process.execPath : "node";
@@ -404,7 +404,7 @@ export function createWecomKfRuntime(params: RuntimeParams) {
         }
         fs.writeFileSync(targetPath, JSON.stringify(cloned, null, 2), "utf-8");
         state.agentConfigPath = targetPath;
-        env.OPENCLAW_CONFIG_PATH = targetPath;
+        env.LINGSHI_CONFIG_PATH = targetPath;
       } catch (err) {
         params.logger.warn(`[wecom-kf] failed to build agent-only config: ${String(err)}`);
       }
@@ -412,9 +412,9 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     };
 
     const agentEnv = await resolveAgentEnv();
-    const resolvedOpenclaw = resolveLocalOpenclaw();
+    const resolvedLingshi = resolveLocalLingshi();
     const argv = [
-      ...(resolvedOpenclaw?.argvPrefix ?? ["openclaw"]),
+      ...(resolvedLingshi?.argvPrefix ?? ["lingshi"]),
       "agent",
       "--local",
       "--agent",
@@ -429,11 +429,11 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     ];
     const result = await params.runtime.system.runCommandWithTimeout(argv, {
       timeoutMs: state.localAgentTimeoutMs,
-      cwd: resolvedOpenclaw?.cwd ?? params.wehelperDir,
+      cwd: resolvedLingshi?.cwd ?? params.wehelperDir,
       env: agentEnv,
     });
     if (result.code !== 0) {
-      const detail = result.stderr.trim() || result.stdout.trim() || "openclaw_agent_failed";
+      const detail = result.stderr.trim() || result.stdout.trim() || "lingshi_agent_failed";
       throw new Error(detail);
     }
     const text = extractAgentText(result.stdout);

@@ -13,7 +13,7 @@ final class ScreenController {
     var urlString: String = ""
     var errorText: String?
 
-    /// Callback invoked when an openclaw:// deep link is tapped in the canvas
+    /// Callback invoked when an lingshi:// deep link is tapped in the canvas
     var onDeepLink: ((URL) -> Void)?
 
     /// Callback invoked when the user clicks an A2UI action (e.g. button) inside the canvas web UI.
@@ -101,7 +101,7 @@ final class ScreenController {
         let js = """
         (() => {
           try {
-            const api = globalThis.__openclaw;
+            const api = globalThis.__lingshi;
             if (!api) return;
             if (typeof api.setDebugStatusEnabled === 'function') {
               api.setDebugStatusEnabled(\(enabled ? "true" : "false"));
@@ -124,7 +124,7 @@ final class ScreenController {
                 let res = try await self.eval(javaScript: """
                 (() => {
                   try {
-                    const host = globalThis.openclawA2UI;
+                    const host = globalThis.lingshiA2UI;
                     return !!host && typeof host.applyMessages === 'function';
                   } catch (_) { return false; }
                 })()
@@ -343,7 +343,7 @@ extension Double {
 
 // MARK: - Navigation Delegate
 
-/// Handles navigation policy to intercept openclaw:// deep links from canvas
+/// Handles navigation policy to intercept lingshi:// deep links from canvas
 @MainActor
 private final class ScreenNavigationDelegate: NSObject, WKNavigationDelegate {
     weak var controller: ScreenController?
@@ -358,8 +358,8 @@ private final class ScreenNavigationDelegate: NSObject, WKNavigationDelegate {
             return
         }
 
-        // Intercept openclaw:// deep links.
-        if url.scheme?.lowercased() == "openclaw" {
+        // Intercept lingshi:// deep links.
+        if url.scheme?.lowercased() == "lingshi" {
             decisionHandler(.cancel)
             self.controller?.onDeepLink?(url)
             return
@@ -387,7 +387,7 @@ private final class ScreenNavigationDelegate: NSObject, WKNavigationDelegate {
 }
 
 private final class CanvasA2UIActionMessageHandler: NSObject, WKScriptMessageHandler {
-    static let messageName = "openclawCanvasA2UIAction"
+    static let messageName = "lingshiCanvasA2UIAction"
     static let handlerNames = [messageName]
 
     weak var controller: ScreenController?

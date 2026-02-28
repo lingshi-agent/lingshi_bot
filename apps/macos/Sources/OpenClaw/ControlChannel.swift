@@ -76,7 +76,7 @@ final class ControlChannel {
     private(set) var lastPingMs: Double?
     private(set) var authSourceLabel: String?
 
-    private let logger = Logger(subsystem: "ai.openclaw", category: "control")
+    private let logger = Logger(subsystem: "ai.lingshi", category: "control")
 
     private var eventTask: Task<Void, Never>?
     private var recoveryTask: Task<Void, Never>?
@@ -420,6 +420,6 @@ final class ControlChannel {
 }
 
 extension Notification.Name {
-    static let controlHeartbeat = Notification.Name("openclaw.control.heartbeat")
-    static let controlAgentEvent = Notification.Name("openclaw.control.agent")
+    static let controlHeartbeat = Notification.Name("lingshi.control.heartbeat")
+    static let controlAgentEvent = Notification.Name("lingshi.control.agent")
 }

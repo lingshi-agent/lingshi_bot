@@ -1,4 +1,4 @@
-const DEFAULT_TAGLINE = "All your chats, one OpenClaw.";
+const DEFAULT_TAGLINE = "All your chats, one Lingshi.";
 
 const HOLIDAY_TAGLINES = {
   newYear:
@@ -66,7 +66,7 @@ const TAGLINES: string[] = [
   "Because texting yourself reminders is so 2024.",
   "Your inbox, your infra, your rules.",
   'Turning "I\'ll reply later" into "my bot replied instantly".',
-  "The only crab in your contacts you actually want to hear from. 🦞",
+  "The only assistant in your contacts you actually want to hear from. [Lingshi]",
   "Chat automation for people who peaked at IRC.",
   "Because Siri wasn't answering at 3AM.",
   "IPC, but it's your phone.",
@@ -253,7 +253,7 @@ export function activeTaglines(options: TaglineOptions = {}): string[] {
 
 export function pickTagline(options: TaglineOptions = {}): string {
   const env = options.env ?? process.env;
-  const override = env?.OPENCLAW_TAGLINE_INDEX;
+  const override = env?.LINGSHI_TAGLINE_INDEX;
   if (override !== undefined) {
     const parsed = Number.parseInt(override, 10);
     if (!Number.isNaN(parsed) && parsed >= 0) {

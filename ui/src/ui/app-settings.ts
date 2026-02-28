@@ -61,7 +61,7 @@ function readDesktopBootstrap(): {
   if (typeof window === "undefined") {
     return null;
   }
-  const fromGlobal = window.__OPENCLAW_DESKTOP_BOOTSTRAP__;
+  const fromGlobal = window.__LINGSHI_DESKTOP_BOOTSTRAP__;
   const fromBridge =
     window.lingshiDesktop?.desktopBootstrap ?? window.wehelperDesktop?.desktopBootstrap;
   const candidate = fromGlobal ?? fromBridge;
@@ -146,9 +146,9 @@ export function applySettingsFromUrl(host: SettingsHost) {
     if (
       typeof desktopBootstrap.basePath === "string" &&
       desktopBootstrap.basePath.trim() &&
-      !window.__OPENCLAW_CONTROL_UI_BASE_PATH__
+      !window.__LINGSHI_CONTROL_UI_BASE_PATH__
     ) {
-      window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = desktopBootstrap.basePath;
+      window.__LINGSHI_CONTROL_UI_BASE_PATH__ = desktopBootstrap.basePath;
     }
   }
 
@@ -329,7 +329,7 @@ export function inferBasePath() {
   if (typeof window === "undefined") {
     return "";
   }
-  const configured = window.__OPENCLAW_CONTROL_UI_BASE_PATH__;
+  const configured = window.__LINGSHI_CONTROL_UI_BASE_PATH__;
   if (typeof configured === "string" && configured.trim()) {
     return normalizeBasePath(configured);
   }

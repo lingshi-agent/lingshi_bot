@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/discord",
+  "name": "@lingshi/discord",
   "version": "2026.2.2",
   "description": "OpenClaw Discord channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "lingshi": "workspace:*"
   },
-  "openclaw": {
+  "lingshi": {
     "extensions": [
       "./index.ts"
     ]

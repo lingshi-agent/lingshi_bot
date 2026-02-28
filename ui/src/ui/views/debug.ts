@@ -58,7 +58,7 @@ export function renderDebug(props: DebugProps) {
                   ${t("Security audit", "安全审计")}: ${securityLabel}${
                     info > 0 ? t(` · ${info} info`, ` · ${info} 项信息`) : ""
                   }. ${t("Run", "运行")}
-                  <span class="mono">openclaw security audit --deep</span> ${t("for details.", "查看详情。")}
+                  <span class="mono">lingshi security audit --deep</span> ${t("for details.", "查看详情。")}
                 </div>`
                 : nothing
             }

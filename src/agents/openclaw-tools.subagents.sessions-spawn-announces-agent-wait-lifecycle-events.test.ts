@@ -23,10 +23,10 @@ vi.mock("../config/config.js", async (importOriginal) => {
 
 import "./test-helpers/fast-core-tools.js";
 import { sleep } from "../utils.js";
-import { createOpenClawTools } from "./openclaw-tools.js";
+import { createOpenClawTools } from "./lingshi-tools.js";
 import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 
-describe("openclaw-tools: subagents", () => {
+describe("lingshi-tools: subagents", () => {
   beforeEach(() => {
     configOverride = {
       session: {
