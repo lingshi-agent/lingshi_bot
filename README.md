@@ -8,26 +8,26 @@ Lingshi 是一个面向多渠道消息接入与 AI 自动化编排的控制平�
 
 ## 使用说明
 
-### 1. 安装依赖
+### 1. 下载并安装客户端安装包
 
-```bash
-pnpm install
-```
+下载对应系统安装包后，按安装向导完成安装。
 
-### 2. 启动 CLI
+### 2. 启动客户端
 
-```bash
-node lingshi.mjs --help
-```
+安装完成后，双击启动客户端程序。
 
-### 3. 启动本地网关（本地验收常用）
+### 3. 等待网关启动成功
 
-```bash
-node lingshi.mjs gateway --allow-unconfigured --auth token --token dev-token-123 --bind loopback --verbose
-```
+进入客户端后，等待状态显示网关已就绪/健康。
 
-### 4. 健康检查
+### 4. 配置供应商
 
-```bash
-LINGSHI_GATEWAY_TOKEN=dev-token-123 node lingshi.mjs gateway call health --url ws://127.0.0.1:18789 --json
-```
+在“供应商配置”中填写并保存供应商信息（如 API 地址与密钥）。
+
+### 5. 微信绑定
+
+打开“微信集成”，使用微信扫码并输入绑定短码完成绑定。
+
+### 6. 开始使用
+
+绑定成功后即可正常使用 Lingshi 的对话与集成功能。
