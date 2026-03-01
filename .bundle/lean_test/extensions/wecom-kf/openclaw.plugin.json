@@ -1,0 +1,25 @@
+{
+  "id": "wecom-kf",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+      "enabled": { "type": "boolean", "default": true },
+      "serverBaseUrl": { "type": "string" },
+      "deviceId": { "type": "string" },
+      "localAgentId": { "type": "string", "default": "main" },
+      "localAgentTimeoutSeconds": { "type": "number", "default": 180 },
+      "skipHistory": { "type": "boolean", "default": false },
+      "sessionMapPath": { "type": "string" }
+    }
+  },
+  "uiHints": {
+    "enabled": { "label": "Enable WeCom KF" },
+    "serverBaseUrl": { "label": "Server Base URL" },
+    "deviceId": { "label": "Device ID (optional)" },
+    "localAgentId": { "label": "Local Agent ID", "advanced": true },
+    "localAgentTimeoutSeconds": { "label": "Local Agent Timeout (s)", "advanced": true },
+    "skipHistory": { "label": "Skip History (Only New Messages)" },
+    "sessionMapPath": { "label": "Session Map Path", "advanced": true }
+  }
+}
