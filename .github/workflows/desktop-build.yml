@@ -2,23 +2,6 @@ name: Desktop Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - codex/**
-      - feature/**
-      - feature/phase3
-    paths:
-      - ".github/workflows/desktop-build.yml"
-      - "lingshi_desktop/**"
-      - "ui/**"
-      - "extensions/**"
-      - "src/**"
-      - "scripts/**"
-      - "lingshi.mjs"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
 
 jobs:
   build-desktop:
