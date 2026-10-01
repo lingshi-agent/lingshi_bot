@@ -67,6 +67,40 @@ type RuntimeState = {
   deviceStatus: WecomKfDeviceState;
 };
 
+type WecomInboundMedia = {
+  media_id?: string;
+  download_url?: string;
+  file_name?: string;
+  size?: number;
+  mime?: string;
+  download_error?: string;
+};
+
+type WecomInboundMergedItem = {
+  index?: number;
+  sender?: string | null;
+  msgtype?: string;
+  content?: string | null;
+  time?: number | null;
+};
+
+type WecomInboundMessage = {
+  schema_version?: number;
+  msgid?: string;
+  msgtype?: string;
+  open_kfid?: string;
+  external_userid?: string;
+  received_at?: number;
+  content_text?: string;
+  text?: { content?: string };
+  merged?: {
+    title?: string;
+    digest?: string | null;
+    items?: WecomInboundMergedItem[];
+  };
+  media?: WecomInboundMedia;
+};
+
 const DEVICE_STATUS_POLL_MS = 15_000;
 const DEVICE_WS_RECONNECT_MS = 5_000;
 
@@ -384,6 +418,198 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     return null;
   };
 
+  const toNum = (value: unknown): number | null => {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value.trim()) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+    return null;
+  };
+
+  const toNonEmpty = (value: unknown): string | null => {
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  };
+
+  const decodeInboundMessage = (payload: {
+    message?: unknown;
+    msgtype?: unknown;
+    content?: unknown;
+    content_text?: unknown;
+    msgid?: unknown;
+    open_kfid?: unknown;
+    external_userid?: unknown;
+    received_at?: unknown;
+  }): WecomInboundMessage => {
+    const message =
+      payload.message && typeof payload.message === "object" && !Array.isArray(payload.message)
+        ? ({ ...(payload.message as Record<string, unknown>) } as WecomInboundMessage)
+        : ({} as WecomInboundMessage);
+    const fallbackType = toNonEmpty(payload.msgtype) ?? "text";
+    if (!message.msgtype) {
+      message.msgtype = fallbackType;
+    }
+    if (!message.msgid) {
+      message.msgid = toNonEmpty(payload.msgid) ?? "";
+    }
+    if (!message.open_kfid) {
+      message.open_kfid = toNonEmpty(payload.open_kfid) ?? "";
+    }
+    if (!message.external_userid) {
+      message.external_userid = toNonEmpty(payload.external_userid) ?? "";
+    }
+    if (!message.received_at) {
+      message.received_at = toNum(payload.received_at) ?? Date.now();
+    }
+    const contentText = toNonEmpty(payload.content_text) ?? toNonEmpty(payload.content) ?? "";
+    if (!message.content_text) {
+      message.content_text = contentText;
+    }
+    if (message.msgtype === "text") {
+      if (!message.text || typeof message.text !== "object") {
+        message.text = {};
+      }
+      if (!message.text.content) {
+        message.text.content = contentText;
+      }
+    }
+    return message;
+  };
+
+  const buildMergedMessageText = (message: WecomInboundMessage): string => {
+    const merged = message.merged ?? {};
+    const title = toNonEmpty(merged.title) ?? "合并转发消息";
+    const digest = toNonEmpty(merged.digest) ?? "";
+    const lines = [`[合并转发] ${title}`];
+    if (digest) {
+      lines.push(`摘要: ${digest}`);
+    }
+    const items = Array.isArray(merged.items) ? merged.items : [];
+    if (items.length > 0) {
+      lines.push("明细:");
+      for (const item of items) {
+        if (!item || typeof item !== "object") {
+          continue;
+        }
+        const index = toNum(item.index) ?? 0;
+        const sender = toNonEmpty(item.sender) ?? "未知发送者";
+        const itemType = toNonEmpty(item.msgtype) ?? "text";
+        const content = toNonEmpty(item.content) ?? "";
+        const prefix = index > 0 ? `${index}.` : "-";
+        lines.push(`${prefix} [${itemType}] ${sender}${content ? `: ${content}` : ""}`);
+      }
+    }
+    return lines.join("\n").trim();
+  };
+
+  const resolveDownloadUrl = (baseUrl: string | null, downloadUrl: string): string => {
+    if (/^https?:\/\//i.test(downloadUrl)) {
+      return downloadUrl;
+    }
+    if (!baseUrl) {
+      return downloadUrl;
+    }
+    return new URL(downloadUrl, `${baseUrl}/`).toString();
+  };
+
+  const downloadInboundMedia = async (
+    message: WecomInboundMessage,
+    baseUrl: string | null,
+  ): Promise<{
+    mediaPath?: string;
+    mediaType?: string;
+    mediaSize?: number;
+    mediaError?: string;
+  }> => {
+    const media = message.media;
+    if (!media || typeof media !== "object") {
+      return {};
+    }
+    if (toNonEmpty(media.download_error)) {
+      return { mediaError: toNonEmpty(media.download_error) ?? "media_unavailable" };
+    }
+    const downloadUrlRaw = toNonEmpty(media.download_url);
+    if (!downloadUrlRaw) {
+      return {};
+    }
+    const downloadUrl = resolveDownloadUrl(baseUrl, downloadUrlRaw);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30_000);
+    try {
+      const response = await fetch(downloadUrl, { signal: controller.signal });
+      if (!response.ok) {
+        return { mediaError: `download_http_${response.status}` };
+      }
+      const contentType = response.headers.get("content-type") ?? undefined;
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const fileName = toNonEmpty(media.file_name) ?? undefined;
+      const msgType = toNonEmpty(message.msgtype) ?? "";
+      const maxBytes =
+        msgType === "voice"
+          ? 10 * 1024 * 1024
+          : msgType === "image"
+            ? 20 * 1024 * 1024
+            : msgType === "video"
+              ? 30 * 1024 * 1024
+              : 30 * 1024 * 1024;
+      const saved = await params.runtime.channel.media.saveMediaBuffer(
+        buffer,
+        contentType,
+        "inbound",
+        maxBytes,
+        fileName,
+      );
+      return {
+        mediaPath: saved.path,
+        mediaType: saved.contentType ?? contentType,
+        mediaSize: saved.size,
+      };
+    } catch (err) {
+      return { mediaError: err instanceof Error ? err.message : String(err) };
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const buildAgentInputText = (
+    message: WecomInboundMessage,
+    fallbackContent: string,
+    mediaMeta: { mediaPath?: string; mediaType?: string; mediaSize?: number; mediaError?: string },
+  ): string => {
+    const msgType = toNonEmpty(message.msgtype) ?? "text";
+    let body = fallbackContent;
+    if (msgType === "text") {
+      body = toNonEmpty(message.text?.content) ?? fallbackContent;
+    } else if (msgType === "merged_msg") {
+      body = buildMergedMessageText(message);
+    } else if (!body) {
+      body = `[${msgType}] 收到消息`;
+    }
+    const lines = [
+      `Body: ${body || "（空）"}`,
+      `RawBody: ${(toNonEmpty(message.content_text) ?? body) || "（空）"}`,
+      `MsgType: ${msgType}`,
+    ];
+    if (mediaMeta.mediaPath) {
+      lines.push(`MediaPath: ${mediaMeta.mediaPath}`);
+    }
+    if (mediaMeta.mediaType) {
+      lines.push(`MediaType: ${mediaMeta.mediaType}`);
+      lines.push(`MediaUrl: ${mediaMeta.mediaPath ?? ""}`);
+    }
+    if (typeof mediaMeta.mediaSize === "number" && Number.isFinite(mediaMeta.mediaSize)) {
+      lines.push(`MediaSize: ${mediaMeta.mediaSize}`);
+    }
+    if (mediaMeta.mediaError) {
+      lines.push(`MediaError: ${mediaMeta.mediaError}`);
+    }
+    lines.push(`WecomMessage: ${JSON.stringify(message)}`);
+    return lines.join("\n");
+  };
+
   const runLocalAgent = async (message: string, sessionId: string): Promise<string> => {
     const resolveAgentEnv = async (): Promise<NodeJS.ProcessEnv> => {
       const env: NodeJS.ProcessEnv = {};
@@ -446,7 +672,11 @@ export function createWecomKfRuntime(params: RuntimeParams) {
       request_id?: unknown;
       open_kfid?: unknown;
       external_userid?: unknown;
+      msgtype?: unknown;
+      msgid?: unknown;
       content?: unknown;
+      content_text?: unknown;
+      message?: unknown;
     },
   ) => {
     const requestId =
@@ -460,6 +690,9 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     const externalUserid =
       typeof payload.external_userid === "string" ? payload.external_userid.trim() : "";
     const content = typeof payload.content === "string" ? payload.content : "";
+    const inboundMessage = decodeInboundMessage(payload);
+    const mediaMeta = await downloadInboundMedia(inboundMessage, state.deviceStatus.baseUrl);
+    const agentInput = buildAgentInputText(inboundMessage, content, mediaMeta);
     const sessionId = `wx_${openKfid || "na"}_${externalUserid || "na"}`;
 
     const sendInboundResult = (payloadIn: {
@@ -482,7 +715,7 @@ export function createWecomKfRuntime(params: RuntimeParams) {
     };
 
     try {
-      const replyText = await runLocalAgent(content, sessionId);
+      const replyText = await runLocalAgent(agentInput, sessionId);
       sendInboundResult({
         request_id: requestId,
         ok: true,
