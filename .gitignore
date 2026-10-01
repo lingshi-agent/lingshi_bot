@@ -73,3 +73,6 @@ gateway.watch.log
 
 # local tooling
 .serena/
+
+
+.bundle
